@@ -1,0 +1,82 @@
+# Framework + Guardrails v4.2 — mapa para agentes
+
+Este repositorio es un framework portable para trabajar con agentes de IA manteniendo estado externo, gates anti-regresion y workflows reproducibles.
+
+## Leer primero
+
+1. `.agent/rules/runtime_core.md` — nucleo permanente de ejecucion (cierre de turno, higiene de sesion, arbol de decision del builder y carga por etapa).
+2. `AGENTS.md` y `CLAUDE.md` — constitucion portable operacional del workspace con bloque gestionado por el framework.
+3. `GUARDRAILS_MASTER.md` — capa constitucional de calidad; define precedencia ante trade-offs (bajo demanda segun etapa).
+4. `.agent/rules/architecture_constraints.md` — invariantes obligatorias y fuente canonica unica de la maquina de estados de modulos (bajo demanda).
+5. `state_manager.get_work_context(view="startup"|"implementation"|"closure"|"recovery")` — contexto selectivo y paginado por etapa.
+6. `_project/03_project_state.json` — fuente de verdad del estado completo (mutar solo via MCP `mutate_state` o CLI).
+7. `_project/04_active_scope.md` — scope activo.
+8. `_project/core.md` y `_project/00_session_brief.json` — proyecciones read-only de continuidad corta.
+9. `.agent/docs/extended_protocol.md` — protocolo extendido (artefactos, supply-chain, descubrimiento). Bajo demanda.
+
+## Comandos y workflows
+
+- Indice canonico: `.agent/workflows/manifest.json`
+- Logica canonica: `.agent/workflows/*.md`
+- Comandos del builder (9): `/nuevo-proyecto` · `/migrar-proyecto` · `/arrancar` · `/diseñar` · `/ciclo` · `/nuevo-bug` · `/reconciliar` · `/gycd` · `/actualizar-framework`
+- Wrappers generados: `.claude/commands/*.md`, `.opencode/commands/*.md` y `.agents/skills/source-command-*/SKILL.md`
+- Sincronizar wrappers: `python3 .agent/scripts/sync_claude_commands.py`
+- Validar framework: `python3 .agent/scripts/framework_doctor.py`
+- Requisito: `python3` debe ser Python 3.11 o superior (CI 3.12-3.14); el doctor lo comprueba
+
+## Flujo recomendado
+
+### Proyecto nuevo
+
+1. `/nuevo-proyecto`
+2. `/diseñar` (descubrimiento → PRD → diseño técnico en secuencia)
+3. `/ciclo <primer módulo>` (encadena `/enriquecer-ticket` → `/tdd` → `/cambio-seguro` → `/cierre-modulo` y devuelve el siguiente paso listo)
+4. `/gycd` al cerrar la unidad de trabajo (y en la sesion siguiente pegar el `Siguiente:` guardado; sin prompt, `/arrancar`)
+
+### Proyecto existente
+
+1. `/migrar-proyecto`
+2. Revisar `_project/20_builder_profile.md` y `_project/21_knowledge_map.md`
+3. `/arrancar` o pegar el `Siguiente:` guardado en `/ciclo`
+
+### Autonomia y foco (3.12-3.17)
+
+- `/foco <area>` — sube la verbosidad y rutea al skill de dominio de esa superficie (frontend, backend, data, seguridad, testing, devops). Persiste `active_focus`.
+- `/ciclo <modulo>` — driver autonomo acotado: lleva UN modulo de scope a cierre encadenando `/enriquecer-ticket` -> `/tdd` -> `/cierre-modulo`, respetando todos los gates. Se para ante STOP GATE (Regla 7), `tier_2` o bloqueo; nunca bypasea. Para tras un modulo.
+- Con `active_focus` seteado, `/cierre-modulo` suma la revision read-only del subagente `area-{frontend,backend,data}` (adicional al gate de Reviewer+Security).
+- `deployment_core` — skill core de operacion/despliegue (heuristica, no ejecuta deploys); se activa ante senales de deploy/CI/secretos.
+
+## Artefactos clave
+
+- `_project/core.md` — capa minima de continuidad de sesion. Proyeccion de solo lectura generada por state_manager.py; la lee /arrancar. No editarla a mano.
+- `_project/01_product_requirements.md` — PRD/MVP vivo.
+- `_project/00_session_brief.json` — brief compacto: proyeccion de solo lectura regenerada con core.md.
+- `_project/02_technical_plan/` — planes tecnicos por fase (`phase_NN.md`) + specs formales (`data_model.md` Mermaid, `api_contract.yaml` OpenAPI 3.1).
+- `_project/03_project_state.json` — estado canonico (fuente unica de verdad).
+- Mutaciones de estado SOLO via la herramienta MCP `mutate_state` (servidor local state_manager) o `python3 .agent/scripts/state_manager.py mutate`; el servidor valida y regenera las proyecciones read-only.
+- `_project/state_log.jsonl` — bitacora append-only de mutaciones (ts, action, payload, result). Se crea con la primera mutacion; no existe en la plantilla.
+- `_project/03_invariants.md` — reglas de negocio, flujos de datos y dominio CANONICOS e inmutables. Solo se modifica con `/actualizar-invariante`.
+- `_project/03_arch_decisions.md` — ADRs.
+- `_project/03_contracts.md` — indice narrativo de interfaces no-HTTP (CLI, bibliotecas, eventos). Para HTTP usa punteros a `02_technical_plan/api_contract.yaml`. Para entidades del dominio usa `02_technical_plan/data_model.md` (ADR-012).
+- `_project/22_lessons.md` — lecciones aprendidas del proyecto. Solo aparece tras la primera invocacion de `/aprender-de-error`; no se modifica `CLAUDE.md` automaticamente (ADR-016).
+- `.agent/templates/mcp.json.base` — plantilla MCP opt-in: Playwright, Context7, Sentry, Atlassian, Figma, Snyk. Ningun MCP activo por defecto.
+- `.agent/scripts/post_edit_format.sh` — hook PostToolUse stack-agnostico; formatea con ruff/black/prettier/gofmt/rustfmt/shfmt si esta instalado, no-op si no.
+- `_project/08_module_acceptance.md` — criterios de aceptacion.
+- `_project/11_file_dependencies.md` — dependencias de archivos por modulo.
+- `_project/13_session_journal.md` — pendientes entre sesiones/compactaciones.
+- `_project/16_release_profile.md` — publicacion GitHub/fase 0.
+- `_project/19_core_skills.md` — skills core.
+- `_project/20_builder_profile.md` — nivel, preferencias y forma de colaboracion del constructor.
+- `_project/21_knowledge_map.md` — mapa de conocimiento del proyecto.
+
+## Reglas que no se saltan
+
+- No quitar funcionalidad existente sin aprobacion explicita.
+- Antes de implementar, clasificar tier de rigor por blast radius + reversibilidad; si entra al proyecto, registrar en `03_project_state.json -> work_tiers`.
+- Antes de modificar codigo existente, ejecutar `.agent/workflows/cambio-seguro.md` (incluye gate de invariantes).
+- No implementar modulos `blocked`.
+- No cerrar modulos sin pasar por `ready_for_validation`.
+- No hacer push a GitHub sin aprobacion explicita.
+- No instalar skills globales sin aprobacion explicita.
+- No modificar `_project/03_invariants.md` directamente — usar `/actualizar-invariante`.
+- Si hay comando nativo equivalente, usar el nativo y dejar el workflow como fallback portable.

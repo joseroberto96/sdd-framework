@@ -1,0 +1,59 @@
+{
+  "_bugs": [],
+  "_clarifications": [],
+  "_decisions": [],
+  "_refs": {
+    "acceptance": "_project/08_module_acceptance.md",
+    "api_contract": "_project/02_technical_plan/api_contract.yaml",
+    "arch_constraints": "_project/10_arch_constraints.md",
+    "arch_decisions": "_project/03_arch_decisions.md",
+    "bugs": "_project/06_bug_fixes.md",
+    "builder_profile": "_project/20_builder_profile.md",
+    "contracts": "_project/03_contracts.md",
+    "core": "_project/core.md",
+    "core_skills": "_project/19_core_skills.md",
+    "data_model": "_project/02_technical_plan/data_model.md",
+    "design_profile": "_project/12_design_profile.md",
+    "domain_profile": "_project/09_domain_profile.md",
+    "environment_profile": "_project/15_environment_profile.md",
+    "file_dependencies": "_project/11_file_dependencies.md",
+    "knowledge_map": "_project/21_knowledge_map.md",
+    "llms_map": "llms.txt",
+    "product_requirements": "_project/01_product_requirements.md",
+    "project_state_schema": ".agent/schemas/project_state.schema.json",
+    "release_profile": "_project/16_release_profile.md",
+    "scope": "_project/04_active_scope.md",
+    "session_brief": "_project/00_session_brief.json",
+    "session_journal": "_project/13_session_journal.md",
+    "skill_provenance": "_project/14_skill_provenance.md",
+    "skill_recommendations": "_project/17_skill_recommendations.md",
+    "workflow_manifest": ".agent/workflows/manifest.json"
+  },
+  "active_mcps": [],
+  "architecture_constraints": [],
+  "closure_rejections": [],
+  "contracts": {
+    "public_interfaces": {}
+  },
+  "current_phase": "phase_01",
+  "current_step": "",
+  "dependencies": [],
+  "framework_mode": "template",
+  "framework_version": "5.3.3",
+  "last_completed_step": "",
+  "module_specs": {},
+  "module_statuses": {},
+  "modules": {
+    "completed": [],
+    "in_progress": [],
+    "pending": []
+  },
+  "project": "[NOMBRE_PROYECTO]",
+  "stack": {
+    "auth": "",
+    "backend": "",
+    "database": "",
+    "frontend": ""
+  },
+  "work_tiers": {}
+}

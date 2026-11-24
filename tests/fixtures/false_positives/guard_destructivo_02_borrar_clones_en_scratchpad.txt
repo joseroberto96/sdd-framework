@@ -1,0 +1,4 @@
+S=/private/tmp/claude-501/-proyecto-ejemplo/00000000-0000-0000-0000-000000000000/scratchpad
+for h in a b; do
+  rm -rf "$S/clon$h"
+done

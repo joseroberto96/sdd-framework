@@ -1,0 +1,47 @@
+name: framework-ci
+
+# Portabilidad verificable (F1): en cada push/PR, un clon limpio debe pasar
+# doctor + tests + idempotencia de sync + el contrato "copiar lo del README →
+# doctor OK". La lógica vive en .agent/scripts/ci_smoke.sh para que sea
+# reproducible localmente (bash .agent/scripts/ci_smoke.sh) y el workflow
+# quede declarativo.
+
+# Minutos de Actions limitados (presupuesto $0): push solo a main (no ramas
+# plan/* ni tags de release, que repetían el mismo commit) y la matriz completa
+# solo en PRs y a mano; en push basta la versión mínima soportada.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    # `python-version: "3.x"` era un pin FLOTANTE: Actions lo resolvía a la
+    # última estable, así que el CI podía ponerse rojo sin que nadie tocara una
+    # línea, solo porque saliera una versión nueva. La matriz cambia la pregunta
+    # de "¿pasa en la que toque hoy?" a "¿qué versiones soporta esta plantilla?"
+    # — el dato que de verdad importa cuando la distribuyes a proyectos con
+    # entornos distintos. Medido antes de fijarla: 3.12, 3.13 y 3.14 en verde.
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJSON(github.event_name == 'push' && '["3.12"]' || '["3.12", "3.13", "3.14"]') }}
+    steps:
+      - name: Checkout (clon limpio)
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # BUG-06: PyYAML es una dependencia opcional aceptada (Opción B) para
+      # las pruebas y features que resuelven api_contract.yaml — el doctor y
+      # el motor de estado siguen sin necesitarla. La suite falla al importar
+      # tests/test_selective_specs_transport.py sin esto instalado.
+      - name: Instalar PyYAML (dependencia opcional de api_contract.yaml)
+        run: pip install pyyaml
+      - name: Ejemplo de continuidad entre sesiones
+        run: python3 examples/session-continuity.py
+      - name: Framework smoke (doctor + tests + Codex fixture + sync + F1 clean-copy)
+        run: bash .agent/scripts/ci_smoke.sh

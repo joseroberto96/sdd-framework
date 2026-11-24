@@ -1,0 +1,243 @@
+{
+  "$descripcion": "Núcleo irreversible del framework (5.3.1 L1.4, S7). Una sola lista de la que se generan los bloqueos nativos: permissions.deny de Claude Code (ensure_claude_settings.py) y .codex/rules/framework-destructive.rules de Codex (ensure_codex_integration.py). Las reglas nativas son una segunda capa: el guard sigue siendo la principal. Cada regla es igual o más estrecha que el guard y ninguna empieza por '*'. No editar los ficheros generados: se edita esta lista y se regenera.",
+  "salida": "Estas órdenes no se desbloquean con el marcador APPROVED-DESTRUCTIVE: si el builder las autoriza, las ejecuta él (en Claude Code, con !orden en el prompt; en Codex, en su terminal).",
+  "reglas": [
+    {
+      "id": "git_push_forzado",
+      "motivo": "git push --force, -f, --mirror o +rama reescribe o borra la historia remota",
+      "claude": [
+        "Bash(git push --force *)",
+        "Bash(git push * --force *)",
+        "Bash(git push -f *)",
+        "Bash(git push * -f *)",
+        "Bash(git push --mirror *)",
+        "Bash(git push * --mirror *)",
+        "Bash(git push * +*)"
+      ],
+      "codex": [
+        {
+          "pattern": ["git", "push", ["--force", "-f", "--mirror"]],
+          "match": ["git push --force origin main", "git push -f", "git push --mirror origin"],
+          "not_match": ["git push --force-with-lease origin main", "git push origin main", "git push --follow-tags origin main"]
+        },
+        {
+          "pattern": ["git", "push", ["origin", "upstream"], ["--force", "-f", "--mirror"]],
+          "match": ["git push origin --force main", "git push upstream -f"],
+          "not_match": ["git push origin --force-with-lease", "git push origin --force-if-includes main", "git push origin HEAD:refs/heads/x"]
+        }
+      ],
+      "debe_bloquear": [
+        "git push --force",
+        "git push --force origin main",
+        "git push origin --force",
+        "git push origin main --force",
+        "git push -f origin main",
+        "git push origin main -f",
+        "git push --mirror origin",
+        "git push origin +main"
+      ],
+      "no_debe_bloquear": [
+        "git push",
+        "git push origin main",
+        "git push --force-with-lease origin main",
+        "git push origin main --force-with-lease",
+        "git push --force-if-includes --force-with-lease origin main",
+        "git push origin HEAD:refs/heads/feature",
+        "git push --follow-tags origin main",
+        "git commit -m \"doc: no uses git push --force\"",
+        "git pull --force"
+      ],
+      "no_casa": [
+        {"forma": "git -C . push --force", "la_para": "guard"},
+        {"forma": "/usr/bin/git push --force", "la_para": "guard"},
+        {"forma": "sh -c 'git push --force'", "la_para": "guard"},
+        {"forma": "git push origin main --force (en Codex: la opción al final)", "la_para": "guard"},
+        {"forma": "env A=1 git push --force (en Codex)", "la_para": "guard"}
+      ]
+    },
+    {
+      "id": "reset_hard_rama_compartida",
+      "motivo": "git reset --hard sobre una rama compartida descarta el trabajo local para igualar el remoto",
+      "claude": [
+        "Bash(git reset --hard origin/*)",
+        "Bash(git reset --hard upstream/*)",
+        "Bash(git reset --hard @{u} *)",
+        "Bash(git reset --hard @{upstream} *)"
+      ],
+      "codex": [
+        {
+          "pattern": ["git", "reset", "--hard", ["@{u}", "@{upstream}", "origin/main", "origin/master", "upstream/main", "upstream/master"]],
+          "match": ["git reset --hard origin/main", "git reset --hard @{u}"],
+          "not_match": ["git reset --hard HEAD~1", "git reset --soft origin/main"]
+        }
+      ],
+      "debe_bloquear": [
+        "git reset --hard origin/main",
+        "git reset --hard upstream/develop",
+        "git reset --hard @{u}"
+      ],
+      "no_debe_bloquear": [
+        "git reset --soft origin/main",
+        "git reset origin/main",
+        "git reset --hard HEAD"
+      ],
+      "no_casa": [
+        {"forma": "git reset --hard HEAD~1 (rama local: la para el guard, con el marcador como salida)", "la_para": "guard"},
+        {"forma": "git reset --hard origin/feature (en Codex solo se enumeran main y master)", "la_para": "guard"}
+      ]
+    },
+    {
+      "id": "esquema_bd_push_reset",
+      "motivo": "db push y db reset reescriben el esquema o recrean la base descartando datos",
+      "claude": [
+        "Bash(supabase db push *)",
+        "Bash(supabase db reset *)",
+        "Bash(npx supabase db push *)",
+        "Bash(npx supabase db reset *)",
+        "Bash(prisma db push *)",
+        "Bash(npx prisma db push *)",
+        "Bash(prisma migrate reset *)",
+        "Bash(npx prisma migrate reset *)",
+        "Bash(drizzle-kit push *)",
+        "Bash(npx drizzle-kit push *)",
+        "Bash(npm run db:push *)",
+        "Bash(pnpm db:push *)",
+        "Bash(pnpm run db:push *)",
+        "Bash(yarn db:push *)"
+      ],
+      "codex": [
+        {
+          "pattern": ["supabase", "db", ["push", "reset"]],
+          "match": ["supabase db push", "supabase db reset"],
+          "not_match": ["supabase db diff"]
+        },
+        {
+          "pattern": ["npx", "supabase", "db", ["push", "reset"]],
+          "match": ["npx supabase db reset"],
+          "not_match": ["npx supabase db diff"]
+        },
+        {
+          "pattern": ["prisma", "db", "push"],
+          "match": ["prisma db push"],
+          "not_match": ["prisma db pull"]
+        },
+        {
+          "pattern": ["npx", "prisma", "db", "push"],
+          "match": ["npx prisma db push"],
+          "not_match": ["npx prisma db pull"]
+        },
+        {
+          "pattern": ["drizzle-kit", "push"],
+          "match": ["drizzle-kit push"],
+          "not_match": ["drizzle-kit generate"]
+        },
+        {
+          "pattern": ["prisma", "migrate", "reset"],
+          "match": ["prisma migrate reset --force"],
+          "not_match": ["prisma migrate dev"]
+        },
+        {
+          "pattern": ["npx", "prisma", "migrate", "reset"],
+          "match": ["npx prisma migrate reset"],
+          "not_match": ["npx prisma migrate deploy"]
+        },
+        {
+          "pattern": ["npx", "drizzle-kit", "push"],
+          "match": ["npx drizzle-kit push"],
+          "not_match": ["npx drizzle-kit generate"]
+        },
+        {
+          "pattern": [["npm", "pnpm", "yarn"], "run", "db:push"],
+          "match": ["npm run db:push"],
+          "not_match": ["npm run db:seed"]
+        },
+        {
+          "pattern": [["pnpm", "yarn"], "db:push"],
+          "match": ["pnpm db:push"],
+          "not_match": ["pnpm db:migrate"]
+        }
+      ],
+      "debe_bloquear": [
+        "supabase db push",
+        "supabase db reset --linked",
+        "npx prisma db push",
+        "prisma migrate reset --force",
+        "npx drizzle-kit push",
+        "npm run db:push"
+      ],
+      "no_debe_bloquear": [
+        "supabase db diff",
+        "npx prisma db pull",
+        "npx prisma migrate dev",
+        "npm run db:seed",
+        "pnpm db:migrate"
+      ],
+      "no_casa": [
+        {"forma": "bunx prisma db push, o con opciones globales delante", "la_para": "guard"}
+      ]
+    },
+    {
+      "id": "sql_drop_truncate",
+      "motivo": "DROP TABLE, DATABASE o SCHEMA y TRUNCATE destruyen tablas o bases enteras",
+      "claude": [
+        "Bash(psql *DROP TABLE*)",
+        "Bash(psql *DROP DATABASE*)",
+        "Bash(psql *DROP SCHEMA*)",
+        "Bash(psql *TRUNCATE *)",
+        "Bash(mysql *DROP TABLE*)",
+        "Bash(mysql *DROP DATABASE*)",
+        "Bash(mysql *DROP SCHEMA*)",
+        "Bash(mysql *TRUNCATE *)",
+        "Bash(mariadb *DROP TABLE*)",
+        "Bash(mariadb *DROP DATABASE*)",
+        "Bash(mariadb *DROP SCHEMA*)",
+        "Bash(mariadb *TRUNCATE *)",
+        "Bash(sqlite3 *DROP TABLE*)"
+      ],
+      "codex": [],
+      "debe_bloquear": [
+        "psql -c 'DROP TABLE users'",
+        "psql -d app -c \"TRUNCATE users\"",
+        "mysql -e 'DROP DATABASE app'",
+        "sqlite3 data.db 'DROP TABLE users'"
+      ],
+      "no_debe_bloquear": [
+        "psql -c 'SELECT 1'",
+        "sqlite3 data.db 'PRAGMA wal_checkpoint(TRUNCATE);'",
+        "rg 'DROP TABLE' docs",
+        "git commit -m 'doc: DROP TABLE en el ejemplo'"
+      ],
+      "no_casa": [
+        {"forma": "drop table en minúsculas (las reglas de Claude distinguen mayúsculas)", "la_para": "guard"},
+        {"forma": "cualquier SQL en Codex: el SQL va en un único token y prefix_rule exige el token entero", "la_para": "guard"},
+        {"forma": "echo 'DROP TABLE x;' | psql", "la_para": "guard"}
+      ]
+    },
+    {
+      "id": "migracion_forzada",
+      "motivo": "una migración forzada (--force) puede perder datos",
+      "claude": [
+        "Bash(php artisan migrate --force *)",
+        "Bash(php artisan migrate * --force *)"
+      ],
+      "codex": [
+        {
+          "pattern": ["php", "artisan", "migrate", "--force"],
+          "match": ["php artisan migrate --force"],
+          "not_match": ["php artisan migrate", "php artisan migrate:status"]
+        }
+      ],
+      "debe_bloquear": [
+        "php artisan migrate --force",
+        "php artisan migrate --seed --force"
+      ],
+      "no_debe_bloquear": [
+        "php artisan migrate",
+        "php artisan migrate:status"
+      ],
+      "no_casa": [
+        {"forma": "otras herramientas de migración con --force", "la_para": "guard"}
+      ]
+    }
+  ]
+}

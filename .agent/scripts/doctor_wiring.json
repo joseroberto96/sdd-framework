@@ -1,0 +1,2457 @@
+{
+ "$comment": "Wiring declarativo del doctor (3.18.0, FW-069). Cada feature declara sus punteros requeridos; framework_doctor.validate_wiring_feature() los adjudica con un solo engine genérico. Una feature nueva se cablea añadiendo una entrada aquí (+ su calibración known-good/known-bad), no escribiendo un validador artesanal. Tipos de check por archivo: missing_message (falla si falta), optional (si falta, se salta sin fallar), stop_if_missing (no evalúa needles si falta), needles (substring; case_insensitive por defecto), all (todos los substrings, un solo mensaje), any (al menos uno), required_regex / all_regex (regex sobre el texto crudo), forbidden_regex (regex que NO debe aparecer), order_before (first debe aparecer antes que then, solo si ambos presentes). manifest_command valida la entrada en manifest.json.",
+ "features": {
+  "minimal_solution_core": {
+   "files": [
+    {
+     "path": ".agent/skills/minimal_solution_core.md",
+     "missing_message": "Skill core faltante: .agent/skills/minimal_solution_core.md",
+     "needles": [
+      {
+       "needle": "core: true",
+       "message": "minimal_solution_core.md debe declararse core: true"
+      },
+      {
+       "needle": "contratos",
+       "message": "minimal_solution_core.md debe subordinarse a contratos"
+      },
+      {
+       "needle": "seguridad",
+       "message": "minimal_solution_core.md debe subordinarse a seguridad/datos"
+      },
+      {
+       "needle": "stdlib",
+       "message": "minimal_solution_core.md debe preferir stdlib antes que código propio"
+      }
+     ]
+    },
+    {
+     "path": "_project/19_core_skills.md",
+     "missing_message": "_project/19_core_skills.md faltante para catalogar minimal_solution_core",
+     "needles": [
+      {
+       "all": [
+        "minimal_solution_core.md"
+       ],
+       "message": "_project/19_core_skills.md no cataloga Solución Mínima Correcta"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/sugerir-skills.md",
+     "missing_message": ".agent/workflows/sugerir-skills.md faltante para activar minimal_solution_core",
+     "needles": [
+      {
+       "all": [
+        "minimal_solution_core.md"
+       ],
+       "message": "sugerir-skills.md no activa minimal_solution_core ante sobreingeniería"
+      }
+     ]
+    },
+    {
+     "path": "_project/14_skill_provenance.md",
+     "missing_message": "_project/14_skill_provenance.md faltante para registrar referencia Ponytail",
+     "needles": [
+      {
+       "needle": "dietrichgebert/ponytail.git",
+       "message": "14_skill_provenance.md no registra Ponytail como referencia externa"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "\\b(ref\\s+)?(main|latest|next|beta)\\b",
+       "on_lowercase": true,
+       "message": "Referencia Ponytail sin pin exacto en 14_skill_provenance.md; no usar main/latest/next/beta"
+      }
+     ],
+     "all_regex": [
+      {
+       "patterns": [
+        "v4\\.7\\.0",
+        "\\badad50d9b393926b2dd5ed7225dcb1848b9df408\\b"
+       ],
+       "message": "Referencia Ponytail debe incluir pin exacto v4.7.0 y commit adad50d9b393926b2dd5ed7225dcb1848b9df408"
+      }
+     ]
+    }
+   ]
+  },
+  "deployment_core": {
+   "files": [
+    {
+     "path": ".agent/skills/deployment_core.md",
+     "missing_message": "Skill core faltante: .agent/skills/deployment_core.md (3.17.0 — cierre L5)",
+     "stop_if_missing": true,
+     "needles": [
+      {
+       "needle": "core: true",
+       "message": "deployment_core.md debe declararse core: true"
+      },
+      {
+       "needle": "contratos",
+       "message": "deployment_core.md debe subordinarse a contratos"
+      },
+      {
+       "needle": "seguridad",
+       "message": "deployment_core.md debe subordinarse a seguridad"
+      },
+      {
+       "needle": "dev",
+       "message": "deployment_core.md debe cubrir separación dev/prod"
+      },
+      {
+       "needle": "secret",
+       "message": "deployment_core.md debe cubrir secretos por entorno"
+      },
+      {
+       "needle": "recovery",
+       "message": "deployment_core.md debe cubrir recuperación ante crash"
+      },
+      {
+       "needle": "sync",
+       "message": "deployment_core.md debe cubrir sync dev↔producción"
+      }
+     ]
+    },
+    {
+     "path": "_project/19_core_skills.md",
+     "missing_message": "_project/19_core_skills.md faltante para catalogar deployment_core (3.17.0)",
+     "needles": [
+      {
+       "needle": "deployment_core.md",
+       "message": "_project/19_core_skills.md no cataloga deployment_core.md (3.17.0)"
+      },
+      {
+       "any": [
+        "deployment / operación",
+        "deployment / operacion"
+       ],
+       "message": "_project/19_core_skills.md no cataloga 'Deployment / Operación' (etiqueta visible)"
+      }
+     ]
+    },
+    {
+     "path": "_project/17_skill_recommendations.md",
+     "missing_message": "_project/17_skill_recommendations.md faltante para la señal de deployment_core",
+     "needles": [
+      {
+       "any": [
+        "deployment / operación",
+        "deployment / operacion"
+       ],
+       "message": "_project/17_skill_recommendations.md no recomienda Deployment / Operación (señal L5)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/foco.md",
+     "missing_message": ".agent/workflows/foco.md faltante (3.12.0)",
+     "needles": [
+      {
+       "needle": "devops",
+       "message": "foco.md no rutea el área 'devops' (3.17.0)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/publicar-github.md",
+     "missing_message": ".agent/workflows/publicar-github.md faltante",
+     "needles": []
+    }
+   ]
+  },
+  "decision_translation_core": {
+   "files": [
+    {
+     "path": ".agent/skills/decision_translation_core.md",
+     "missing_message": "Skill core faltante: .agent/skills/decision_translation_core.md",
+     "needles": [
+      {
+       "needle": "core: true",
+       "message": "decision_translation_core.md debe declararse core: true"
+      },
+      {
+       "needle": "choice_text",
+       "message": "decision_translation_core.md debe declarar el render CHOICE_TEXT"
+      },
+      {
+       "needle": "guardrails",
+       "message": "decision_translation_core.md debe subordinarse a GUARDRAILS"
+      }
+     ]
+    },
+    {
+     "path": "_project/19_core_skills.md",
+     "missing_message": "_project/19_core_skills.md faltante para catalogar decision_translation_core",
+     "needles": [
+      {
+       "needle": "decision_translation_core.md",
+       "message": "_project/19_core_skills.md no cataloga Traducción de Decisiones"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/_capability_matrix.md",
+     "missing_message": "_capability_matrix.md no declara la fila CHOICE_TEXT",
+     "needles": [
+      {
+       "needle": "CHOICE_TEXT",
+       "case_sensitive": true,
+       "message": "_capability_matrix.md no declara la fila CHOICE_TEXT"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "missing_message": ".agent/workflows/cierre-modulo.md no engancha el digest C (decision_translation_core)",
+     "needles": [
+      {
+       "needle": "decision_translation_core",
+       "case_sensitive": true,
+       "message": ".agent/workflows/cierre-modulo.md no engancha el digest C (decision_translation_core)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/nueva-fase.md",
+     "missing_message": ".agent/workflows/nueva-fase.md no engancha el digest C (decision_translation_core)",
+     "needles": [
+      {
+       "needle": "decision_translation_core",
+       "case_sensitive": true,
+       "message": ".agent/workflows/nueva-fase.md no engancha el digest C (decision_translation_core)"
+      }
+     ]
+    }
+   ]
+  },
+  "foco": {
+   "manifest_command": {
+    "name": "foco",
+    "missing_message": "foco no está declarado en manifest.json (requerido por 3.12.0 — modo foco)",
+    "claude_command": true,
+    "claude_command_message": "foco debe tener claude_command:true en manifest.json (comando público del usuario)",
+    "source": ".agent/workflows/foco.md",
+    "source_mismatch_message": "foco.source inesperado en manifest.json: {source}",
+    "source_missing_message": "foco.source declarado pero archivo inexistente: {source}"
+   },
+   "files": [
+    {
+     "path": ".agent/workflows/foco.md",
+     "missing_message": ".agent/workflows/foco.md faltante (workflow público /foco)",
+     "needles": [
+      {
+       "needle": "set_focus",
+       "message": "foco.md falta needle obligatorio: set_focus — foco.md no invoca la mutación set_focus"
+      },
+      {
+       "needle": "active_focus",
+       "message": "foco.md falta needle obligatorio: active_focus — foco.md no referencia el campo active_focus"
+      }
+     ]
+    },
+    {
+     "path": ".agent/skills/decision_translation_core.md",
+     "missing_message": ".agent/skills/decision_translation_core.md faltante (3.12.0 exige la subsección de checkpoint)",
+     "needles": []
+    }
+   ]
+  },
+  "ciclo": {
+   "manifest_command": {
+    "name": "ciclo",
+    "missing_message": "ciclo no está declarado en manifest.json (requerido por 3.14.0 — driver acotado)",
+    "claude_command": true,
+    "claude_command_message": "ciclo debe tener claude_command:true en manifest.json (comando público del usuario)",
+    "source": ".agent/workflows/ciclo.md",
+    "source_mismatch_message": "ciclo.source inesperado en manifest.json: {source}",
+    "source_missing_message": "ciclo.source declarado pero archivo inexistente: {source}"
+   },
+   "files": [
+    {
+     "path": ".agent/workflows/ciclo.md",
+     "missing_message": ".agent/workflows/ciclo.md faltante (workflow público /ciclo)",
+     "stop_if_missing": true,
+     "needles": [
+      {
+       "needle": "decision_translation_core",
+       "message": "ciclo.md no referencia decision_translation_core (Fase 1, checkpoint por blast radius)"
+      },
+      {
+       "needle": "scope-siguiente",
+       "message": "ciclo.md no referencia /scope-siguiente (encadenamiento de Fase 0)"
+      },
+      {
+       "needle": "enriquecer-ticket",
+       "message": "ciclo.md no referencia /enriquecer-ticket (encadenamiento)"
+      },
+      {
+       "needle": "tdd",
+       "message": "ciclo.md no referencia /tdd (encadenamiento)"
+      },
+      {
+       "needle": "cierre-modulo",
+       "message": "ciclo.md no referencia /cierre-modulo (encadenamiento)"
+      },
+      {
+       "needle": "ciclo_started",
+       "message": "ciclo.md no llama ciclo_started (telemetría de inicio)"
+      },
+      {
+       "needle": "ciclo_paused",
+       "message": "ciclo.md no llama ciclo_paused (telemetría de pausa)"
+      },
+      {
+       "needle": "ciclo_finished",
+       "message": "ciclo.md no llama ciclo_finished (telemetría de cierre)"
+      },
+      {
+       "needle": "\"mode\": \"fase\"",
+       "message": "ciclo.md no envía mode en la telemetría del modo fase (bug de FW-332)"
+      },
+      {
+       "needle": "INVOCADO_POR_CICLO: true",
+       "message": "ciclo.md no declara el contexto de ejecución anidada"
+      },
+      {
+       "needle": "INTERNAL_RESULT: CONTINUE",
+       "message": "ciclo.md no declara CONTINUE sin devolver el turno"
+      },
+      {
+       "needle": "INTERNAL_RESULT: BLOCK",
+       "message": "ciclo.md no declara BLOCK como parada real"
+      },
+      {
+       "needle": "INTERNAL_RESULT: DECISION_REQUIRED",
+       "message": "ciclo.md no declara DECISION_REQUIRED como decisión real"
+      },
+      {
+       "needle": "APPROVE_RECEIPT",
+       "message": "ciclo.md no exige recibo vigente para evitar doble aprobación Tier 2"
+      },
+      {
+       "needle": "workflow_receipts.py approval",
+       "message": "ciclo.md no adjudica APPROVE_RECEIPT con el validador mecánico"
+      },
+      {
+       "needle": "03_project_state.json.dependencies",
+       "message": "ciclo.md no cruza bootstrap contra dependencias canónicas"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "--no-verify",
+       "flags": "i",
+       "message": "ciclo.md contiene '--no-verify' (bypass de pre_commit)"
+      },
+      {
+       "pattern": "\\bsaltar\\s+(?:el\\s+)?gate\\b",
+       "flags": "i",
+       "message": "ciclo.md contiene 'saltar gate'"
+      },
+      {
+       "pattern": "\\bbypass\\w*\\s+(?:el\\s+|del\\s+)?gate\\b",
+       "flags": "i",
+       "message": "ciclo.md contiene 'bypass de gate'"
+      },
+      {
+       "pattern": "\\bskip\\s+(?:el\\s+|the\\s+)?gate\\b",
+       "flags": "i",
+       "message": "ciclo.md contiene 'skip gate'"
+      },
+      {
+       "pattern": "\\b(?:skip|saltar)\\s+(?:el\\s+|la\\s+)?validat\\w+",
+       "flags": "i",
+       "message": "ciclo.md contiene 'skip/saltar validación'"
+      },
+      {
+       "pattern": "\\b(?:skip|saltar)\\s+validate_\\w+",
+       "flags": "i",
+       "message": "ciclo.md contiene 'skip validate_*'"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/workflow_receipts.py",
+     "missing_message": "workflow_receipts.py faltante (APPROVE/review/bootstrap mecánicos)",
+     "needles": [
+      {
+       "needle": "def approval_problems",
+       "message": "workflow_receipts.py no valida APPROVE_RECEIPT"
+      },
+      {
+       "needle": "def review_problems",
+       "message": "workflow_receipts.py no valida review receipt"
+      },
+      {
+       "needle": "def dependency_bootstrap_problems",
+       "message": "workflow_receipts.py no valida bootstrap contra estado y lock"
+      }
+     ]
+     }
+    ]
+   },
+   "builder_language_core": {
+   "files": [
+    {
+     "path": ".agent/skills/builder_language_core.md",
+     "missing_message": "Skill core faltante: .agent/skills/builder_language_core.md",
+     "needles": [
+      {
+       "needle": "core: true",
+       "message": "builder_language_core.md debe declararse core: true"
+      },
+      {
+       "needle": "lenguaje cotidiano",
+       "message": "builder_language_core.md debe exigir lenguaje cotidiano"
+      },
+      {
+       "needle": "analogía",
+       "message": "builder_language_core.md debe permitir analogías útiles"
+      },
+      {
+       "needle": "qué significa para ti",
+       "message": "builder_language_core.md debe abrir por impacto para el builder"
+      }
+     ]
+    },
+    {
+     "path": "_project/19_core_skills.md",
+     "missing_message": "_project/19_core_skills.md faltante para catalogar builder_language_core",
+     "needles": [
+      {
+       "all": [
+        "builder_language_core.md"
+       ],
+       "message": "_project/19_core_skills.md no cataloga Lenguaje de Builder"
+      }
+     ]
+    },
+    {
+     "path": "_project/17_skill_recommendations.md",
+     "missing_message": "_project/17_skill_recommendations.md faltante para recomendar builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/skills/decision_translation_core.md",
+     "missing_message": "decision_translation_core.md no delega lenguaje al builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/arrancar.md",
+     "missing_message": ".agent/workflows/arrancar.md faltante para enganchar builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/preflight-review.md",
+     "missing_message": ".agent/workflows/preflight-review.md faltante para enganchar builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/tech-design-mvp.md",
+     "missing_message": ".agent/workflows/tech-design-mvp.md faltante para enganchar builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/actualizar-framework.md",
+     "missing_message": ".agent/workflows/actualizar-framework.md faltante para enganchar builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "missing_message": ".agent/workflows/cierre-modulo.md faltante para enganchar builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/nueva-fase.md",
+     "missing_message": ".agent/workflows/nueva-fase.md faltante para enganchar builder_language_core",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/preflight-review.md",
+     "optional": true,
+     "needles": [
+      {
+       "needle": "Qué significa para ti:",
+       "case_sensitive": true,
+       "message": "preflight-review.md no abre su salida con impacto cotidiano"
+      }
+     ]
+    }
+   ]
+  },
+  "preflight_review": {
+   "manifest_command": {
+    "name": "preflight-review",
+    "missing_message": "preflight-review no está declarado en manifest.json",
+    "source": ".agent/workflows/preflight-review.md",
+    "source_mismatch_message": "preflight-review.source debe ser .agent/workflows/preflight-review.md en manifest.json",
+    "claude_command": false,
+    "claude_command_message": "preflight-review debe tener claude_command:false (workflow interno, sin menú /)"
+   },
+   "files": [
+    {
+     "path": ".agent/workflows/preflight-review.md",
+     "missing_message": ".agent/workflows/preflight-review.md faltante",
+     "needles": [
+      {
+       "needle": "plan_review: pass | fail",
+       "message": "preflight-review.md debe definir salida PLAN_REVIEW: pass | fail"
+      },
+      {
+       "needle": "read_only_subagents",
+       "message": "preflight-review.md debe declarar READ_ONLY_SUBAGENTS cuando aplique"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/preflight-reviewer.md",
+     "missing_message": ".agent/subagents/preflight-reviewer.md faltante",
+     "needles": [
+      {
+       "needle": "solo lectura",
+       "message": "preflight-reviewer.md debe ser de solo lectura"
+      },
+      {
+       "needle": "plan_review: pass | fail",
+       "message": "preflight-reviewer.md debe definir PLAN_REVIEW: pass | fail"
+      },
+      {
+       "needle": "03_project_state.json",
+       "message": "preflight-reviewer.md debe respetar la fuente de verdad del estado"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/README.md",
+     "missing_message": ".agent/subagents/README.md no cataloga preflight-reviewer",
+     "needles": [
+      {
+       "needle": "preflight-reviewer",
+       "message": ".agent/subagents/README.md no cataloga preflight-reviewer"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/tdd.md",
+     "missing_message": ".agent/workflows/tdd.md faltante para enlazar preflight-review",
+     "needles": [
+      {
+       "needle": ".agent/workflows/preflight-review.md",
+       "case_sensitive": true,
+       "message": ".agent/workflows/tdd.md no invoca .agent/workflows/preflight-review.md antes de CODE"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cambio-seguro.md",
+     "missing_message": ".agent/workflows/cambio-seguro.md faltante para enlazar preflight-review",
+     "needles": [
+      {
+       "needle": ".agent/workflows/preflight-review.md",
+       "case_sensitive": true,
+       "message": ".agent/workflows/cambio-seguro.md no invoca .agent/workflows/preflight-review.md antes de CODE"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/refactorizar-arquitectura.md",
+     "missing_message": ".agent/workflows/refactorizar-arquitectura.md faltante para enlazar preflight-review",
+     "needles": [
+      {
+       "needle": ".agent/workflows/preflight-review.md",
+       "case_sensitive": true,
+       "message": ".agent/workflows/refactorizar-arquitectura.md no invoca .agent/workflows/preflight-review.md antes de CODE"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/enriquecer-ticket.md",
+     "missing_message": ".agent/workflows/enriquecer-ticket.md faltante para enlazar preflight-review",
+     "needles": [
+      {
+       "needle": ".agent/workflows/preflight-review.md",
+       "case_sensitive": true,
+       "message": ".agent/workflows/enriquecer-ticket.md no invoca .agent/workflows/preflight-review.md antes de CODE"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/tech-design-mvp.md",
+     "missing_message": ".agent/workflows/tech-design-mvp.md faltante para enlazar preflight-review",
+     "needles": [
+      {
+       "needle": ".agent/workflows/preflight-review.md",
+       "case_sensitive": true,
+       "message": ".agent/workflows/tech-design-mvp.md no invoca .agent/workflows/preflight-review.md antes de CODE"
+      }
+     ]
+    }
+   ]
+  },
+  "reviewer_security": {
+   "files": [
+    {
+     "path": ".agent/subagents/reviewer.md",
+     "missing_message": ".agent/subagents/reviewer.md faltante",
+     "needles": [
+      {
+       "needle": "solo lectura",
+       "message": "reviewer.md debe declarar modo solo lectura"
+      },
+      {
+       "needle": "reviewer_result: pass | fail",
+       "message": "reviewer.md debe definir salida REVIEWER_RESULT: pass | fail"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/security.md",
+     "missing_message": ".agent/subagents/security.md faltante",
+     "needles": [
+      {
+       "needle": "solo lectura",
+       "message": "security.md debe declarar modo solo lectura"
+      },
+      {
+       "needle": "security_result: pass | fail",
+       "message": "security.md debe definir salida SECURITY_RESULT: pass | fail"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/README.md",
+     "optional": true,
+     "needles": [
+      {
+       "needle": "preflight reviewer",
+       "message": ".agent/subagents/README.md no cataloga 'preflight reviewer'"
+      },
+      {
+       "needle": "reviewer",
+       "message": ".agent/subagents/README.md no cataloga 'reviewer'"
+      },
+      {
+       "needle": "security",
+       "message": ".agent/subagents/README.md no cataloga 'security'"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "optional": true,
+     "needles": [
+      {
+       "needle": "reviewer",
+       "message": "cierre-modulo.md no invoca al subagente Reviewer"
+      },
+      {
+       "needle": "security",
+       "message": "cierre-modulo.md no invoca al subagente Security"
+      },
+      {
+       "needle": "start_independent_review",
+       "message": "cierre-modulo.md no sella el diff antes del review independiente"
+      },
+      {
+       "needle": "record_review_receipt",
+       "message": "cierre-modulo.md no persiste evidencia del review independiente"
+      },
+      {
+       "needle": "workflow_receipts.py review",
+       "message": "cierre-modulo.md no valida mecánicamente el review receipt"
+      },
+      {
+       "needle": "framework-review/",
+       "message": "cierre-modulo.md no genera el patch para los revisores (FW-341)"
+      }
+     ]
+    }
+   ]
+  },
+  "area_subagents": {
+   "files": [
+    {
+     "path": ".agent/subagents/area-frontend.md",
+     "missing_message": ".agent/subagents/area-frontend.md faltante",
+     "needles": [
+      {
+       "needle": "solo lectura",
+       "message": "area-frontend.md debe declarar modo solo lectura"
+      },
+      {
+       "needle": "area_review: pass | fail",
+       "message": "area-frontend.md debe definir salida AREA_REVIEW: pass | fail"
+      },
+      {
+       "needle": "frontend_design",
+       "message": "area-frontend.md debe citar la skill frontend_design (no reimplementa)"
+      },
+      {
+       "needle": "cross_platform_web",
+       "message": "area-frontend.md debe citar la skill cross_platform_web (no reimplementa)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/area-backend.md",
+     "missing_message": ".agent/subagents/area-backend.md faltante",
+     "needles": [
+      {
+       "needle": "solo lectura",
+       "message": "area-backend.md debe declarar modo solo lectura"
+      },
+      {
+       "needle": "area_review: pass | fail",
+       "message": "area-backend.md debe definir salida AREA_REVIEW: pass | fail"
+      },
+      {
+       "needle": "architecture_core",
+       "message": "area-backend.md debe citar la skill architecture_core (no reimplementa)"
+      },
+      {
+       "needle": "security_core",
+       "message": "area-backend.md debe citar la skill security_core (no reimplementa)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/area-data.md",
+     "missing_message": ".agent/subagents/area-data.md faltante",
+     "needles": [
+      {
+       "needle": "solo lectura",
+       "message": "area-data.md debe declarar modo solo lectura"
+      },
+      {
+       "needle": "area_review: pass | fail",
+       "message": "area-data.md debe definir salida AREA_REVIEW: pass | fail"
+      },
+      {
+       "needle": "architecture_core",
+       "message": "area-data.md debe citar la skill architecture_core (no reimplementa)"
+      },
+      {
+       "needle": "security_core",
+       "message": "area-data.md debe citar la skill security_core (no reimplementa)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/README.md",
+     "optional": true,
+     "needles": [
+      {
+       "needle": "area frontend",
+       "message": ".agent/subagents/README.md no cataloga al subagente 'area frontend' (3.16.0)"
+      },
+      {
+       "needle": "area backend",
+       "message": ".agent/subagents/README.md no cataloga al subagente 'area backend' (3.16.0)"
+      },
+      {
+       "needle": "area data",
+       "message": ".agent/subagents/README.md no cataloga al subagente 'area data' (3.16.0)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "optional": true,
+     "needles": [
+      {
+       "needle": "active_focus",
+       "message": "cierre-modulo.md falta la referencia condicional a 'active_focus' (3.16.0)"
+      },
+      {
+       "needle": "area-frontend",
+       "message": "cierre-modulo.md falta la referencia condicional a 'area-frontend' (3.16.0)"
+      },
+      {
+       "needle": "area-backend",
+       "message": "cierre-modulo.md falta la referencia condicional a 'area-backend' (3.16.0)"
+      },
+      {
+       "needle": "area-data",
+       "message": "cierre-modulo.md falta la referencia condicional a 'area-data' (3.16.0)"
+      },
+      {
+       "needle": "reviewer",
+       "message": "cierre-modulo.md perdió la invocación al subagente Reviewer (anti-regresión)"
+      },
+      {
+       "needle": "security",
+       "message": "cierre-modulo.md perdió la invocación al subagente Security (anti-regresión)"
+      }
+     ]
+    }
+   ]
+  },
+  "checkpoint_template": {
+   "files": [
+    {
+     "path": ".agent/skills/decision_translation_core.md",
+     "missing_message": "Skill core faltante: .agent/skills/decision_translation_core.md (3.19.0 exige la plantilla de checkpoint)",
+     "needles": [
+      {
+       "needle": "plantilla obligatoria",
+       "message": "decision_translation_core.md no declara la plantilla obligatoria del checkpoint (3.19.0, FW-074)"
+      },
+      {
+       "needle": "Decisión:",
+       "case_sensitive": true,
+       "message": "decision_translation_core.md no declara el campo 'Decisión:' de la plantilla"
+      },
+      {
+       "needle": "Qué significa para ti:",
+       "case_sensitive": true,
+       "message": "decision_translation_core.md no declara el campo 'Qué significa para ti:' de la plantilla"
+      },
+      {
+       "needle": "Analogía:",
+       "case_sensitive": true,
+       "message": "decision_translation_core.md no declara el campo 'Analogía:' de la plantilla"
+      },
+      {
+       "needle": "Recomendación:",
+       "case_sensitive": true,
+       "message": "decision_translation_core.md no declara el campo 'Recomendación:' de la plantilla"
+      },
+      {
+       "needle": "validate_checkpoint.py",
+       "message": "decision_translation_core.md no apunta a la regla mecánica validate_checkpoint.py"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/validate_checkpoint.py",
+     "missing_message": ".agent/scripts/validate_checkpoint.py faltante (gate de estructura del checkpoint, 3.19.0)",
+     "needles": [
+      {
+       "needle": "checkpoint_problems",
+       "message": "validate_checkpoint.py no expone checkpoint_problems (API del gate)"
+      }
+     ]
+    }
+   ]
+  },
+  "proactive_experts": {
+   "files": [
+    {
+     "path": ".agent/workflows/sugerir-skills.md",
+     "missing_message": ".agent/workflows/sugerir-skills.md faltante (detección unificada de expertise, 4.1.0)",
+     "needles": [
+      {
+       "needle": "_TEMPLATE.md",
+       "case_sensitive": true,
+       "message": "sugerir-skills.md no usa la plantilla de experto _TEMPLATE.md"
+      },
+      {
+       "needle": "Camino único",
+       "message": "sugerir-skills.md no declara ser el único camino de nacimiento de expertos (FW-131)"
+      },
+      {
+       "needle": "Barrido de sub-dominios",
+       "message": "sugerir-skills.md no registra el barrido en la tabla \"Barrido de sub-dominios\" de 09_domain_profile.md"
+      }
+     ]
+    },
+    {
+     "path": ".agent/skills/domain/_TEMPLATE.md",
+     "missing_message": ".agent/skills/domain/_TEMPLATE.md faltante (plantilla de experto, 4.1.0)",
+     "needles": [
+      {
+       "needle": "expert: true",
+       "message": "_TEMPLATE.md no declara expert: true"
+      },
+      {
+       "needle": "register_decision",
+       "message": "_TEMPLATE.md no declara la trazabilidad vía register_decision + expertise"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/diseñar.md",
+     "missing_message": ".agent/workflows/diseñar.md faltante",
+     "needles": [
+      {
+       "needle": "sugerir-skills.md",
+       "message": "diseñar.md no invoca sugerir-skills.md (Parte A) para la detección de expertos"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/enriquecer-ticket.md",
+     "missing_message": ".agent/workflows/enriquecer-ticket.md faltante",
+     "needles": [
+      {
+       "needle": "EXPERTISE GATE",
+       "message": "enriquecer-ticket.md perdió el gate 0.7 (EXPERTISE GATE) que activa la lente del experto sobre el ticket"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "missing_message": ".agent/workflows/cierre-modulo.md faltante",
+     "needles": [
+      {
+       "needle": "EXPERT GATE",
+       "message": "cierre-modulo.md perdió el gate 3.9 (EXPERT GATE) que audita expertos activos vs sub-dominios tocados"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/añadir-experto.md",
+     "missing_message": ".agent/workflows/añadir-experto.md faltante",
+     "needles": [
+      {
+       "needle": "camino MANUAL",
+       "message": "añadir-experto.md no se declara como el camino manual (el proactivo es sugerir-skills.md Parte A)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/nuevo-proyecto.md",
+     "missing_message": ".agent/workflows/nuevo-proyecto.md faltante",
+     "needles": [
+      {
+       "needle": "camino único",
+       "message": "nuevo-proyecto.md paso 7 no delega en el camino único de sugerir-skills.md (FW-131) — riesgo de que reaparezca un segundo formato de experto"
+      },
+      {
+       "needle": "_TEMPLATE.md",
+       "case_sensitive": true,
+       "message": "nuevo-proyecto.md paso 7 no usa _TEMPLATE.md como formato de experto"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/scope-siguiente.md",
+     "missing_message": ".agent/workflows/scope-siguiente.md faltante (FW-132)",
+     "needles": [
+      {
+       "needle": "EXPERT GATE",
+       "message": "scope-siguiente.md perdió el gate 1.5 (EXPERT GATE) que audita expertos activos al nacer el scope"
+      },
+      {
+       "needle": "[experto: domain/",
+       "case_sensitive": true,
+       "message": "scope-siguiente.md no documenta el formato de marca [experto: domain/...] en el cuerpo del AC"
+      }
+     ]
+    }
+   ]
+  },
+  "ciclo_paralelo": {
+   "files": [
+    {
+     "path": ".agent/workflows/ciclo.md",
+     "missing_message": ".agent/workflows/ciclo.md faltante (4.2.0)",
+     "needles": [
+      {
+       "needle": "--paralelo",
+       "case_sensitive": true,
+       "message": "ciclo.md no declara el flag opt-in --paralelo (4.2.0)"
+      },
+      {
+       "needle": "capability_tier",
+       "case_sensitive": true,
+       "message": "ciclo.md no hereda execution_profile.capability_tier a los ejecutores (FW-061)"
+      },
+      {
+       "needle": "state_write_lock",
+       "case_sensitive": true,
+       "message": "ciclo.md no serializa mutaciones vía state_write_lock (FW-068)"
+      },
+      {
+       "all": [
+        "cierre"
+       ],
+       "message": "ciclo.md debe declarar que los gates de cierre no se paralelizan"
+      },
+      {
+       "needle": "reconciliar",
+       "message": "ciclo.md no ejecuta /reconciliar tras la tanda paralela"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/executor.md",
+     "missing_message": ".agent/subagents/executor.md faltante (contrato del ejecutor paralelo, 4.2.0)",
+     "needles": [
+      {
+       "needle": "EXECUTOR_RESULT",
+       "case_sensitive": true,
+       "message": "executor.md no define la salida canónica EXECUTOR_RESULT"
+      },
+      {
+       "needle": "capability_tier",
+       "case_sensitive": true,
+       "message": "executor.md no hereda la graduación por capacidad (FW-061)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/README.md",
+     "optional": true,
+     "needles": [
+      {
+       "needle": "executor",
+       "message": ".agent/subagents/README.md no cataloga al subagente 'executor' (4.2.0)"
+      }
+     ]
+    }
+   ]
+  },
+  "subagent_wait_lifecycle": {
+   "files": [
+    {
+     "path": ".agent/docs/specs/2026-09-01-subagent-wait-lifecycle.md",
+     "missing_message": ".agent/docs/specs/2026-09-01-subagent-wait-lifecycle.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "la spec formal no declara SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "`WAIT_TIMEOUT_NONTERMINAL` es no terminal",
+       "case_sensitive": true,
+       "message": "la spec formal no declara WAIT_TIMEOUT_NONTERMINAL como no terminal"
+      },
+      {
+       "all": [
+        "Estados observacionales no terminales",
+        "`RUNNING`",
+        "`COMPACTING`"
+       ],
+       "case_sensitive": true,
+       "message": "la spec formal no distingue RUNNING/COMPACTING como observaciones no terminales"
+      },
+      {
+       "all": [
+        "Estados terminales de resultado",
+        "`PASS`",
+        "`FAIL`",
+        "`NEEDS_ATTENTION`",
+        "`UNAVAILABLE`"
+       ],
+       "case_sensitive": true,
+       "message": "la spec formal no declara el conjunto canónico de estados terminales de resultado"
+      }
+     ]
+    },
+    {
+     "path": ".agent/docs/extended_protocol.md",
+     "missing_message": ".agent/docs/extended_protocol.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "extended_protocol.md no declara el protocolo SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "extended_protocol.md no declara WAIT_TIMEOUT_NONTERMINAL como timeout no terminal"
+      },
+      {
+       "all": [
+        "PASS",
+        "FAIL",
+        "NEEDS_ATTENTION",
+        "UNAVAILABLE"
+       ],
+       "case_sensitive": true,
+       "message": "extended_protocol.md debe declarar PASS/FAIL/NEEDS_ATTENTION/UNAVAILABLE como estados terminales observables"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "missing_message": ".agent/workflows/cierre-modulo.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "cierre-modulo.md no consume SUBAGENT_WAIT_LIFECYCLE en revisiones independientes"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "cierre-modulo.md no declara que WAIT_TIMEOUT_NONTERMINAL no es pass/fail ni cancelación"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/preflight-review.md",
+     "missing_message": ".agent/workflows/preflight-review.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "preflight-review.md no consume SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "preflight-review.md no declara WAIT_TIMEOUT_NONTERMINAL como no terminal"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "No se ejecuta\\s+`interrupt`\\s+ni\\s+`close_agent`\\s+autom[aá]ticamente",
+       "message": "preflight-review.md debe anclar la negación contextual: no ejecutar interrupt/close_agent automáticamente por timeout"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "(?im)^(?=[^\\n]*(?:(?<!no\\s)(?<!no\\sse\\s)\\b(?:debe|deber[aá])\\s+(?:ejecutar|llamar)\\b|(?<!no\\s)(?<!no\\sse\\s)(?<!no\\sdebe\\s)(?<!no\\sse\\sdebe\\s)\\b(?:ejecutar|llamar)\\b))(?=[^\\n]*`interrupt`)(?=[^\\n]*`close_agent`)(?=[^\\n]*autom[aá]ticamente)[^\\n]*$",
+       "message": "preflight-review.md contiene una instrucción positiva de cancelación automática; debe conservar solo la prohibición contextual"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/preflight-reviewer.md",
+     "missing_message": ".agent/subagents/preflight-reviewer.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "preflight-reviewer.md no hereda SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "preflight-reviewer.md no declara WAIT_TIMEOUT_NONTERMINAL"
+      },
+      {
+       "needle": "INDEPENDENT_SUBAGENT_NO_ISOLATION",
+       "case_sensitive": true,
+       "message": "preflight-reviewer.md debe declarar INDEPENDENT_SUBAGENT_NO_ISOLATION como marcador exacto"
+      },
+      {
+       "needle": "SECUENCIAL_NO_AISLADO",
+       "case_sensitive": true,
+       "message": "preflight-reviewer.md debe declarar SECUENCIAL_NO_AISLADO como marcador exacto"
+      },
+      {
+       "all": [
+        "NEEDS_ATTENTION",
+        "UNAVAILABLE"
+       ],
+       "case_sensitive": true,
+       "message": "preflight-reviewer.md debe reportar desaparición real como NEEDS_ATTENTION/UNAVAILABLE"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/_capability_matrix.md",
+     "missing_message": ".agent/adapters/_capability_matrix.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "_capability_matrix.md no cataloga SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "_capability_matrix.md no declara la degradación WAIT_TIMEOUT_NONTERMINAL"
+      },
+      {
+       "needle": "NEEDS_ATTENTION",
+       "case_sensitive": true,
+       "message": "_capability_matrix.md no declara NEEDS_ATTENTION como estado degradado observable"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/codex.md",
+     "missing_message": ".agent/adapters/codex.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "codex.md no declara SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "codex.md no declara WAIT_TIMEOUT_NONTERMINAL"
+      },
+      {
+       "all": [
+        "dispatcher Codex",
+        "no intercepta"
+       ],
+       "case_sensitive": true,
+       "message": "codex.md debe dejar claro que la garantía mecánica depende del dispatcher Codex y no de enforcement runtime del framework"
+      },
+      {
+       "needle": "En Codex no se delega por defecto",
+       "case_sensitive": true,
+       "message": "codex.md debe declarar que en Codex no se delega por defecto (ADR-072, D2)"
+      },
+      {
+       "all": [
+        "20 min sin progreso observable",
+        "NEEDS_ATTENTION"
+       ],
+       "case_sensitive": true,
+       "message": "codex.md debe declarar el tope de espera y que el subagente interrumpido queda como NEEDS_ATTENTION (ADR-072, D1)"
+      },
+      {
+       "needle": "codex_delegation: legacy",
+       "case_sensitive": true,
+       "message": "codex.md debe documentar el interruptor de reversión codex_delegation: legacy (ADR-072)"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "no debe llamar\\s+`interrupt`\\s+ni\\s+`close_agent`\\s+autom[aá]ticamente",
+       "flags": "i",
+       "message": "codex.md debe anclar la negación contextual: no llamar interrupt/close_agent automáticamente por timeout"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "(?i)(?:lanzar|despachar|ejecutar)\\s+en\\s+paralelo\\s+(?:varios|los)\\s+encargos",
+       "message": "codex.md contiene la instrucción de paralelizar por defecto retirada en ADR-072; la delegación en Codex es opcional"
+      },
+      {
+       "pattern": "(?i)ejecutar\\s+varios\\s+encargos\\s+independientes\\s+en\\s+paralelo",
+       "message": "codex.md contiene la instrucción de paralelizar por defecto retirada en ADR-072; la delegación en Codex es opcional"
+      },
+      {
+       "pattern": "(?im)^(?=[^\\n]*(?:(?<!no\\s)(?<!no\\sse\\s)\\b(?:debe|deber[aá])\\s+(?:ejecutar|llamar)\\b|(?<!no\\s)(?<!no\\sse\\s)(?<!no\\sdebe\\s)(?<!no\\sse\\sdebe\\s)\\b(?:ejecutar|llamar)\\b))(?=[^\\n]*`interrupt`)(?=[^\\n]*`close_agent`)(?=[^\\n]*autom[aá]ticamente)[^\\n]*$",
+       "message": "codex.md contiene una instrucción positiva de cancelación automática; debe conservar solo la prohibición contextual"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/claude-code.md",
+     "missing_message": ".agent/adapters/claude-code.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "claude-code.md no declara SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "claude-code.md no declara WAIT_TIMEOUT_NONTERMINAL"
+      },
+      {
+       "all": [
+        "PASS",
+        "FAIL",
+        "NEEDS_ATTENTION",
+        "UNAVAILABLE"
+       ],
+       "case_sensitive": true,
+       "message": "claude-code.md no declara los cuatro terminales del contrato"
+      },
+      {
+       "all": [
+        "RUNNING",
+        "COMPACTING"
+       ],
+       "case_sensitive": true,
+       "message": "claude-code.md no declara los estados observacionales no terminales"
+      },
+      {
+       "all": [
+        "Agent tool",
+        "TaskStop"
+       ],
+       "case_sensitive": true,
+       "message": "claude-code.md debe nombrar el vector real del entorno: sin timeout letal del dispatcher, el riesgo es que el padre narre un terminal; TaskStop es su close_agent"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "no debe llamar\\s+`interrupt`\\s+ni\\s+`close_agent`\\s+autom[aá]ticamente",
+       "flags": "i",
+       "message": "claude-code.md debe anclar la negación contextual: no llamar interrupt/close_agent automáticamente por una espera agotada"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "(?im)^(?=[^\\n]*(?:(?<!no\\s)(?<!no\\sse\\s)\\b(?:debe|deber[aá])\\s+(?:ejecutar|llamar)\\b|(?<!no\\s)(?<!no\\sse\\s)(?<!no\\sdebe\\s)(?<!no\\sse\\sdebe\\s)\\b(?:ejecutar|llamar)\\b))(?=[^\\n]*`interrupt`)(?=[^\\n]*`close_agent`)(?=[^\\n]*autom[aá]ticamente)[^\\n]*$",
+       "message": "claude-code.md contiene una instrucción positiva de cancelación automática; debe conservar solo la prohibición contextual"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/opencode.md",
+     "missing_message": ".agent/adapters/opencode.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "opencode.md no declara SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "opencode.md no declara WAIT_TIMEOUT_NONTERMINAL"
+      },
+      {
+       "all": [
+        "PASS",
+        "FAIL",
+        "NEEDS_ATTENTION",
+        "UNAVAILABLE"
+       ],
+       "case_sensitive": true,
+       "message": "opencode.md no declara los cuatro terminales del contrato"
+      },
+      {
+       "all": [
+        "RUNNING",
+        "COMPACTING"
+       ],
+       "case_sensitive": true,
+       "message": "opencode.md no declara los estados observacionales no terminales"
+      },
+      {
+       "all": [
+        "la semántica de espera no",
+        "UNAVAILABLE"
+       ],
+       "case_sensitive": true,
+       "message": "opencode.md debe declarar que la semántica de espera no está verificada empíricamente y que la postura por defecto es UNAVAILABLE"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "no debe llamar\\s+`interrupt`\\s+ni\\s+`close_agent`\\s+autom[aá]ticamente",
+       "flags": "i",
+       "message": "opencode.md debe anclar la negación contextual: no llamar interrupt/close_agent automáticamente por una espera agotada"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "(?im)^(?=[^\\n]*(?:(?<!no\\s)(?<!no\\sse\\s)\\b(?:debe|deber[aá])\\s+(?:ejecutar|llamar)\\b|(?<!no\\s)(?<!no\\sse\\s)(?<!no\\sdebe\\s)(?<!no\\sse\\sdebe\\s)\\b(?:ejecutar|llamar)\\b))(?=[^\\n]*`interrupt`)(?=[^\\n]*`close_agent`)(?=[^\\n]*autom[aá]ticamente)[^\\n]*$",
+       "message": "opencode.md contiene una instrucción positiva de cancelación automática; debe conservar solo la prohibición contextual"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/antigravity.md",
+     "missing_message": ".agent/adapters/antigravity.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "antigravity.md no declara SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "antigravity.md no declara WAIT_TIMEOUT_NONTERMINAL"
+      },
+      {
+       "all": [
+        "PASS",
+        "FAIL",
+        "NEEDS_ATTENTION",
+        "UNAVAILABLE"
+       ],
+       "case_sensitive": true,
+       "message": "antigravity.md no declara los cuatro terminales del contrato"
+      },
+      {
+       "all": [
+        "RUNNING",
+        "COMPACTING"
+       ],
+       "case_sensitive": true,
+       "message": "antigravity.md no declara los estados observacionales no terminales"
+      },
+      {
+       "all": [
+        "no se ha ejercido en una sesión real",
+        "NEEDS_ATTENTION"
+       ],
+       "case_sensitive": true,
+       "message": "antigravity.md debe declarar que la semántica de espera no se ha ejercido en campo y no inventar terminal por silencio"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "no debe llamar\\s+`interrupt`\\s+ni\\s+`close_agent`\\s+autom[aá]ticamente",
+       "flags": "i",
+       "message": "antigravity.md debe anclar la negación contextual: no llamar interrupt/close_agent automáticamente por una espera agotada"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "(?im)^(?=[^\\n]*(?:(?<!no\\s)(?<!no\\sse\\s)\\b(?:debe|deber[aá])\\s+(?:ejecutar|llamar)\\b|(?<!no\\s)(?<!no\\sse\\s)(?<!no\\sdebe\\s)(?<!no\\sse\\sdebe\\s)\\b(?:ejecutar|llamar)\\b))(?=[^\\n]*`interrupt`)(?=[^\\n]*`close_agent`)(?=[^\\n]*autom[aá]ticamente)[^\\n]*$",
+       "message": "antigravity.md contiene una instrucción positiva de cancelación automática; debe conservar solo la prohibición contextual"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/generic.md",
+     "missing_message": ".agent/adapters/generic.md faltante para SUBAGENT_WAIT_LIFECYCLE",
+     "needles": [
+      {
+       "needle": "SUBAGENT_WAIT_LIFECYCLE",
+       "case_sensitive": true,
+       "message": "generic.md no declara SUBAGENT_WAIT_LIFECYCLE"
+      },
+      {
+       "needle": "WAIT_TIMEOUT_NONTERMINAL",
+       "case_sensitive": true,
+       "message": "generic.md no declara WAIT_TIMEOUT_NONTERMINAL"
+      },
+      {
+       "all": [
+        "PASS",
+        "FAIL",
+        "NEEDS_ATTENTION",
+        "UNAVAILABLE"
+       ],
+       "case_sensitive": true,
+       "message": "generic.md no declara los cuatro terminales del contrato"
+      },
+      {
+       "all": [
+        "RUNNING",
+        "COMPACTING"
+       ],
+       "case_sensitive": true,
+       "message": "generic.md no declara los estados observacionales no terminales"
+      },
+      {
+       "all": [
+        "15_environment_profile.md",
+        "caso conservador"
+       ],
+       "case_sensitive": true,
+       "message": "generic.md debe fijar la degradación por defecto y remitir la declaración de terminales reales a 15_environment_profile.md"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "no debe llamar\\s+`interrupt`\\s+ni\\s+`close_agent`\\s+autom[aá]ticamente",
+       "flags": "i",
+       "message": "generic.md debe anclar la negación contextual: no llamar interrupt/close_agent automáticamente por una espera agotada"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "(?im)^(?=[^\\n]*(?:(?<!no\\s)(?<!no\\sse\\s)\\b(?:debe|deber[aá])\\s+(?:ejecutar|llamar)\\b|(?<!no\\s)(?<!no\\sse\\s)(?<!no\\sdebe\\s)(?<!no\\sse\\sdebe\\s)\\b(?:ejecutar|llamar)\\b))(?=[^\\n]*`interrupt`)(?=[^\\n]*`close_agent`)(?=[^\\n]*autom[aá]ticamente)[^\\n]*$",
+       "message": "generic.md contiene una instrucción positiva de cancelación automática; debe conservar solo la prohibición contextual"
+      }
+     ]
+    }
+   ]
+  },
+  "friccion_autonoma": {
+   "files": [
+    {
+     "path": ".agent/workflows/ciclo.md",
+     "missing_message": ".agent/workflows/ciclo.md faltante (4.2.1)",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/retrospectiva-framework.md",
+     "missing_message": ".agent/workflows/retrospectiva-framework.md faltante",
+     "needles": [
+      {
+       "needle": "ciclo_paused",
+       "case_sensitive": true,
+       "message": "retrospectiva-framework.md no cruza las pausas del driver (ciclo_paused) como señal dura (4.2.1, FW-075)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/gycd.md",
+     "missing_message": ".agent/workflows/gycd.md faltante",
+     "needles": []
+    },
+    {
+     "path": ".agent/scripts/pre_commit.sh",
+     "missing_message": ".agent/scripts/pre_commit.sh faltante",
+     "needles": [
+      {
+       "needle": "FW-099",
+       "case_sensitive": true,
+       "message": "pre_commit.sh no recuerda registrar la fricción (FW-NNN) en los puntos de bloqueo de gate (FW-099)"
+      }
+     ]
+    }
+   ]
+  },
+  "cierre_de_turno": {
+   "files": [
+    {
+     "path": ".agent/rules/runtime_core.md",
+     "missing_message": ".agent/rules/runtime_core.md faltante: el contrato del cierre de turno no tiene núcleo donde vivir (5.3.0, FW-314)",
+     "needles": [
+      {
+       "needle": "## Cierre de turno",
+       "case_sensitive": true,
+       "message": "runtime_core.md perdió la sección «Cierre de turno» (D3 de 5.3.0): el contrato deja de estar siempre cargado"
+      },
+      {
+       "needle": "Todo turno que devuelve el control",
+       "case_sensitive": true,
+       "message": "runtime_core.md no declara el alcance del cierre: todo turno que devuelve el control"
+      },
+      {
+       "needle": "nunca en bloque",
+       "message": "runtime_core.md no prohíbe el cierre dentro de un bloque de código"
+      },
+      {
+       "needle": "- Normal, dos líneas: «Siguiente: /",
+       "case_sensitive": true,
+       "message": "runtime_core.md no declara el caso normal del cierre de turno"
+      },
+      {
+       "needle": "- Decisión pendiente, una línea: «Siguiente: decisión — ",
+       "case_sensitive": true,
+       "message": "runtime_core.md no declara el caso de decisión pendiente del cierre de turno (B3)"
+      },
+      {
+       "needle": "- Espera o proceso largo:",
+       "case_sensitive": true,
+       "message": "runtime_core.md no declara el caso de espera o proceso largo del cierre de turno"
+      },
+      {
+       "needle": "- Bloqueo, una línea: «Siguiente: ninguno — ",
+       "case_sensitive": true,
+       "message": "runtime_core.md no declara el caso de bloqueo del cierre de turno"
+      },
+      {
+       "needle": "- Pregunta suelta:",
+       "case_sensitive": true,
+       "message": "runtime_core.md no declara el caso de pregunta suelta del cierre de turno"
+      },
+      {
+       "all": [
+        "`/ciclo` construye",
+        "`/diseñar`",
+        "`/reconciliar`",
+        "`/nuevo-bug`",
+        "`/gycd`",
+        "`/arrancar`"
+       ],
+       "case_sensitive": true,
+       "message": "runtime_core.md no declara el comando por tipo de trabajo en el cierre de turno"
+      }
+     ]
+    },
+    {
+     "path": "AGENTS.md",
+     "missing_message": "AGENTS.md faltante (el bloque gestionado remite al cierre de turno del núcleo)",
+     "template_only": true,
+     "needles": [
+      {
+       "all": [
+        "«Cierre de turno»",
+        ".agent/rules/runtime_core.md"
+       ],
+       "case_sensitive": true,
+       "message": "AGENTS.md no remite a la sección «Cierre de turno» de runtime_core.md"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "BEGIN GESTIONADO: framework.*respuesta\\s+de\\s+workflow.*FIN GESTIONADO: framework",
+       "flags": "is",
+       "message": "el bloque gestionado de AGENTS.md vuelve a acotar el cierre a «respuesta de workflow» (FW-314): el alcance es todo turno que devuelve el control"
+      }
+     ]
+    }
+   ]
+  },
+  "turn_close_hook": {
+   "files": [
+    {
+     "path": ".agent/scripts/turn_close_hook.py",
+     "missing_message": ".agent/scripts/turn_close_hook.py faltante (hook Stop del cierre de turno, 5.3.0 L4, ADR-074)",
+     "needles": [
+      {
+       "needle": "validate_turn_close(text, manifest=manifest, mode=\"live\")",
+       "case_sensitive": true,
+       "message": "turn_close_hook.py no usa el validador único del cierre en modo live (D1)"
+      },
+      {
+       "needle": "stop_hook_active",
+       "case_sensitive": true,
+       "message": "turn_close_hook.py no mira stop_hook_active: podría bloquear dos veces (D2)"
+      },
+      {
+       "needle": "RESULT_FAILED_OPEN",
+       "case_sensitive": true,
+       "message": "turn_close_hook.py no registra el fallo abierto (D2)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/templates/settings.json.base",
+     "missing_message": ".agent/templates/settings.json.base faltante (hooks de Claude Code)",
+     "needles": [
+      {
+       "needle": "turn_close_hook.py --host claude",
+       "case_sensitive": true,
+       "message": "settings.json.base no engancha turn_close_hook.py en Stop: el cierre de turno no se verifica en Claude Code"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/codex_hook_runner.py",
+     "missing_message": ".agent/scripts/codex_hook_runner.py faltante (adaptador runtime de hooks Codex)",
+     "needles": [
+      {
+       "needle": "turn_close_hook.evaluate",
+       "case_sensitive": true,
+       "message": "codex_hook_runner.py no llama a turn_close_hook en Stop: el cierre de turno no se verifica en Codex"
+      }
+     ]
+    },
+    {
+     "path": ".agent/rules/runtime_core.md",
+     "missing_message": ".agent/rules/runtime_core.md faltante",
+     "needles": [
+      {
+       "needle": "el hook `Stop` corta el bucle",
+       "case_sensitive": true,
+       "message": "runtime_core.md no remite al hook Stop en la regla 7 (FW-328)"
+      },
+      {
+       "needle": "el hook `Stop` avisa de sesión larga",
+       "case_sensitive": true,
+       "message": "runtime_core.md no remite al hook Stop en la regla 6 (FW-335)"
+      }
+     ]
+    }
+   ]
+  },
+  "esfuerzo_por_tier": {
+   "files": [
+    {
+     "path": ".agent/skills/decision_translation_core.md",
+     "missing_message": "Skill core faltante: decision_translation_core.md (4.3.0)",
+     "needles": [
+      {
+       "needle": "Bloque de cierre de turno",
+       "message": "decision_translation_core.md perdió el bloque de cierre de turno (FW-141/142) — sin él, comando/instrucción/esfuerzo vuelven a emitirse sueltos y a destiempo"
+      },
+      {
+       "needle": "Modelo: <strong|standard|limited>",
+       "case_sensitive": true,
+       "message": "decision_translation_core.md no declara el eje Modelo con los 3 niveles agnósticos de proveedor (A8)"
+      },
+      {
+       "needle": "xhigh",
+       "message": "decision_translation_core.md no declara el nivel tope de esfuerzo (xhigh)"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "🟣",
+       "message": "decision_translation_core.md reintrodujo el 5º nivel de esfuerzo (max/🟣); la escala acordada es de 4 niveles: bajo/medio/alto/xhigh (FW-142)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/scope-siguiente.md",
+     "missing_message": ".agent/workflows/scope-siguiente.md faltante",
+     "needles": [
+      {
+       "needle": "Modelo:",
+       "case_sensitive": true,
+       "message": "scope-siguiente.md no emite el eje Modelo al pedir aprobación de ACs"
+      },
+      {
+       "needle": "Esfuerzo:",
+       "case_sensitive": true,
+       "message": "scope-siguiente.md no emite el eje Esfuerzo al pedir aprobación de ACs"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/ciclo.md",
+     "missing_message": ".agent/workflows/ciclo.md faltante",
+     "needles": [
+      {
+       "needle": "discrepancia de tier",
+       "message": "ciclo.md perdió el chequeo de discrepancia de tier del paso 1.5 (FW-142) — sin él, un tier_2 puede arrancar con el esfuerzo calibrado para tier_1"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/arrancar.md",
+     "missing_message": ".agent/workflows/arrancar.md faltante",
+     "needles": [
+      {
+       "needle": "Siguiente: /",
+       "case_sensitive": true,
+       "message": "arrancar.md no emite la línea copiable única 'Siguiente: /comando instrucción' (FW-141)"
+      },
+      {
+       "needle": "autosuficiente",
+       "message": "arrancar.md no exige que la instrucción del prompt sea autosuficiente para cualquier modelo (FW-141)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "missing_message": ".agent/workflows/cierre-modulo.md faltante",
+     "needles": [
+      {
+       "needle": "Siguiente: /ciclo",
+       "case_sensitive": true,
+       "message": "cierre-modulo.md no emite la línea copiable única en su paso de SALIDA (FW-141)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/gycd.md",
+     "missing_message": ".agent/workflows/gycd.md faltante",
+     "needles": [
+      {
+       "needle": "autosuficiente",
+       "message": "gycd.md no exige que next_action sea una instrucción autosuficiente (FW-141) — un next_action vago rompe la línea Siguiente de la sesión siguiente"
+      }
+     ]
+    },
+    {
+     "path": ".agent/subagents/executor.md",
+     "missing_message": ".agent/subagents/executor.md faltante",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/preflight-review.md",
+     "missing_message": ".agent/workflows/preflight-review.md faltante",
+     "needles": []
+    }
+   ]
+  },
+  "evidencia_y_trazabilidad": {
+   "files": [
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "missing_message": ".agent/workflows/cierre-modulo.md faltante",
+     "needles": []
+    },
+    {
+     "path": ".agent/workflows/gycd.md",
+     "missing_message": ".agent/workflows/gycd.md faltante",
+     "needles": []
+    }
+   ]
+  },
+  "production_command_guard": {
+   "files": [
+    {
+     "path": ".agent/scripts/guard_destructive_command.py",
+     "missing_message": ".agent/scripts/guard_destructive_command.py faltante (motor del Production Command Guard, FW-082)",
+     "needles": [
+      {
+       "needle": "def is_destructive",
+       "message": "guard_destructive_command.py no expone is_destructive (API del motor)"
+      },
+      {
+       "needle": "permissionDecision",
+       "message": "guard_destructive_command.py no emite decisión de hook PreToolUse"
+      },
+      {
+       "needle": "APPROVED-DESTRUCTIVE",
+       "message": "guard_destructive_command.py no implementa la escotilla APPROVED-DESTRUCTIVE"
+      }
+     ]
+    },
+    {
+     "path": ".claude/settings.json",
+     "missing_message": ".claude/settings.json faltante (adaptador Claude Code del guardia)",
+     "needles": [
+      {
+       "needle": "PreToolUse",
+       "message": ".claude/settings.json no declara el hook PreToolUse del guardia (FW-082)"
+      },
+      {
+       "needle": "guard_destructive_command.py",
+       "message": ".claude/settings.json: el hook PreToolUse no invoca el motor del guardia"
+      }
+     ]
+    },
+    {
+     "path": "opencode.json",
+     "missing_message": "opencode.json faltante (adaptador OpenCode del guardia)",
+     "needles": [
+      {
+       "needle": "\"bash\"",
+       "case_sensitive": true,
+       "message": "opencode.json no declara permission.bash con patrones destructivos (FW-082)"
+      }
+     ]
+    },
+    {
+     "path": "AGENTS.md",
+     "missing_message": "AGENTS.md faltante (adaptador Codex del guardia)",
+     "needles": [
+      {
+       "needle": "APPROVED-DESTRUCTIVE",
+       "message": "AGENTS.md no documenta la frontera de comandos destructivos para Codex (FW-082)"
+      }
+     ]
+    }
+   ]
+  },
+  "codex_integration": {
+   "files": [
+    {
+     "path": ".agent/templates/codex_config.toml.base",
+     "missing_message": ".agent/templates/codex_config.toml.base faltante (MCP nativo de Codex)",
+     "needles": [
+      {
+       "needle": "[mcp_servers.state_manager]",
+       "message": "codex_config.toml.base no declara mcp_servers.state_manager"
+      },
+      {
+       "needle": ".agent/scripts/state_manager.py",
+       "message": "codex_config.toml.base no apunta al state_manager local"
+      }
+     ]
+    },
+    {
+     "path": ".agent/templates/codex_hooks.json.base",
+     "missing_message": ".agent/templates/codex_hooks.json.base faltante (contrato de hooks Codex)",
+     "needles": [
+      {
+       "needle": "PreToolUse",
+       "message": "codex_hooks.json.base no declara PreToolUse"
+      },
+      {
+       "needle": "PostToolUse",
+       "message": "codex_hooks.json.base no declara PostToolUse"
+      },
+      {
+       "needle": "Stop",
+       "message": "codex_hooks.json.base no declara Stop"
+      },
+      {
+       "needle": "__CODEX_HOOK_COMMAND__",
+       "message": "codex_hooks.json.base no usa el marcador de runner gestionado"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/codex_hook_runner.py",
+     "missing_message": ".agent/scripts/codex_hook_runner.py faltante (adaptador runtime de hooks Codex)",
+     "needles": [
+      {
+       "needle": "find_project_root",
+       "message": "codex_hook_runner.py no resuelve la raíz desde cwd/event.cwd"
+      },
+      {
+       "needle": "guard_destructive_command.py",
+       "message": "codex_hook_runner.py no delega al guardia destructivo existente"
+      },
+      {
+       "needle": "post_edit_format.sh",
+       "message": "codex_hook_runner.py no delega al formateador existente"
+      },
+      {
+       "needle": "Sesión terminada",
+       "message": "codex_hook_runner.py no emite el recordatorio Stop"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/sync_codex_hooks.py",
+     "missing_message": ".agent/scripts/sync_codex_hooks.py faltante (sincronizador Codex)",
+     "needles": [
+      {
+       "needle": "preserv",
+       "message": "sync_codex_hooks.py no documenta ni implementa preservación de hooks personalizados"
+      },
+      {
+       "needle": "--check",
+       "message": "sync_codex_hooks.py no expone modo check no mutante"
+      },
+      {
+       "needle": "FW-CODEX:",
+       "message": "sync_codex_hooks.py no usa marcadores de hooks gestionados"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/ensure_codex_integration.py",
+     "missing_message": ".agent/scripts/ensure_codex_integration.py faltante (state_manager obligatorio para Codex)",
+     "needles": [
+      {
+       "needle": "state_manager",
+       "message": "ensure_codex_integration.py no asegura state_manager"
+      },
+      {
+       "needle": "Claude",
+       "message": "ensure_codex_integration.py no declara la rama de no-op para Claude"
+      },
+      {
+       "needle": "config.toml",
+       "message": "ensure_codex_integration.py no asegura la configuración MCP nativa de Codex"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/codex_runtime_smoke.py",
+     "missing_message": ".agent/scripts/codex_runtime_smoke.py faltante (smoke runtime Codex)",
+     "needles": [
+      {
+       "needle": "run_smoke",
+       "message": "codex_runtime_smoke.py no expone run_smoke"
+      },
+      {
+       "needle": "unavailable",
+       "message": "codex_runtime_smoke.py no distingue CLI no disponible"
+      },
+      {
+       "needle": "--strict",
+       "message": "codex_runtime_smoke.py no expone modo estricto"
+      },
+      {
+       "needle": "codex_host_dispatch",
+       "message": "codex_runtime_smoke.py no separa el dispatch real del host"
+      },
+      {
+       "needle": "--record-profile",
+       "message": "codex_runtime_smoke.py no permite registrar evidencia en el perfil"
+      },
+      {
+       "needle": "--surface",
+       "message": "codex_runtime_smoke.py no separa las superficies CLI y Desktop"
+      },
+      {
+       "needle": "required_surfaces",
+       "message": "codex_runtime_smoke.py no declara superficies requeridas de forma independiente"
+      },
+      {
+       "needle": "model_reasoning_effort",
+       "message": "codex_runtime_smoke.py no fija el esfuerzo del modelo explícitamente"
+      },
+      {
+       "needle": "mcpToolCall",
+       "message": "codex_runtime_smoke.py no exige una invocación MCP estructurada"
+      },
+      {
+       "needle": "app-server",
+       "message": "codex_runtime_smoke.py no implementa el transporte Desktop app-server"
+      }
+     ]
+    },
+    {
+     "path": ".agent/scripts/codex_profile.py",
+     "missing_message": ".agent/scripts/codex_profile.py faltante (detección canónica del harness)",
+     "needles": [
+      {
+       "needle": "detect_primary_harness_text",
+       "message": "codex_profile.py no expone el parser canónico del harness"
+      },
+      {
+       "needle": "status",
+       "message": "codex_profile.py no devuelve un estado de detección observable"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/codex.md",
+     "missing_message": ".agent/adapters/codex.md faltante (adaptador Codex)",
+     "needles": [
+      {
+       "needle": "structural_support",
+       "message": "codex.md no distingue soporte estructural"
+      },
+      {
+       "needle": "runtime_smoke",
+       "message": "codex.md no distingue smoke runtime"
+      }
+     ]
+    },
+    {
+     "path": "AGENTS.md",
+     "missing_message": "AGENTS.md no expone el procedimiento de activación Codex",
+     "needles": [
+      {
+       "needle": "ensure_codex_integration.py --from-profile",
+       "message": "AGENTS.md no indica cómo activar Codex desde el perfil"
+      },
+      {
+       "needle": "revisar y confiar los hooks",
+       "message": "AGENTS.md no hace visible la revisión/confianza de hooks Codex"
+      }
+     ]
+    },
+    {
+     "path": "README.md",
+     "missing_message": "README.md no documenta la activación Codex de primera clase",
+     "template_only": true,
+     "needles": [
+      {
+       "needle": "codex_runtime_smoke.py",
+       "message": "README.md no documenta la evidencia runtime Codex"
+      },
+      {
+       "needle": "runtime_smoke=pass",
+       "message": "README.md no distingue smoke disponible de runtime verificado"
+      }
+     ]
+    }
+   ]
+  },
+  "code_graph_adapter": {
+   "files": [
+    {
+     "path": ".agent/adapters/code_graph.md",
+     "missing_message": ".agent/adapters/code_graph.md faltante (descriptor del adaptador CODE_GRAPH)",
+     "needles": []
+    },
+    {
+     "path": ".agent/scripts/code_graph.py",
+     "missing_message": ".agent/scripts/code_graph.py faltante (shim del adaptador CODE_GRAPH)",
+     "needles": [
+      {
+       "needle": "TOOL_VERSION_PIN",
+       "message": "code_graph.py no declara TOOL_VERSION_PIN (pin de versión fijado)"
+      },
+      {
+       "needle": "auto_watch",
+       "message": "code_graph.py no menciona auto_watch — debe forzarlo a false explícitamente"
+      }
+     ],
+     "forbidden_regex": [
+      {
+       "pattern": "manage_adr\\s*\\(",
+       "message": "code_graph.py invoca manage_adr — prohibido; 03_arch_decisions.md es la única fuente de decisiones"
+      },
+      {
+       "pattern": "TOOL_VERSION_PIN\\s*=\\s*[\"'](unpinned|latest|next|beta|0\\.0\\.0)",
+       "flags": "i",
+       "message": "TOOL_VERSION_PIN sin pin exacto (unpinned/latest/next/beta/0.0.0 no son pines válidos)"
+      },
+      {
+       "pattern": "auto_watch[\"']?\\s*[:=]\\s*True\\b",
+       "message": "code_graph.py fuerza auto_watch=True — debe forzarse a false",
+       "flags": "i"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "TOOL_VERSION_PIN\\s*=\\s*[\"']0\\.8\\.1[\"']",
+       "message": "TOOL_VERSION_PIN debe fijarse al pin verificado 0.8.1 (server.json de codebase-memory-mcp)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/_capability_matrix.md",
+     "missing_message": ".agent/adapters/_capability_matrix.md faltante (matriz de degradación por capacidad)",
+     "needles": [
+      {
+       "needle": "CODE_GRAPH_MANUAL",
+       "message": "_capability_matrix.md no declara la fila CODE_GRAPH_MANUAL (requerida porque code_graph.md existe)"
+      }
+     ]
+    }
+   ]
+  },
+  "cambio_seguro_code_graph": {
+   "files": [
+    {
+     "path": ".agent/workflows/cambio-seguro.md",
+     "missing_message": ".agent/workflows/cambio-seguro.md faltante",
+     "needles": [
+      {
+       "needle": "CODE_GRAPH_MANUAL",
+       "message": "cambio-seguro.md no declara la degradación CODE_GRAPH_MANUAL"
+      }
+     ]
+    }
+   ]
+  },
+  "antigravity_menu_duplicado": {
+   "files": [
+    {
+     "path": ".agent/adapters/antigravity.md",
+     "missing_message": ".agent/adapters/antigravity.md faltante (FW-135/136)",
+     "needles": [
+      {
+       "needle": "MENU_DUPLICADO",
+       "message": "antigravity.md no declara la degradación MENU_DUPLICADO (menú duplicado .claude/commands + .agents/skills, FW-135)"
+      },
+      {
+       "needle": ".agents/skills",
+       "message": "antigravity.md no documenta .agents/skills como superficie nativa"
+      },
+      {
+       "needle": "MCP_FALLBACK",
+       "message": "antigravity.md no declara MCP_FALLBACK para el motor de estado (FW-136)"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/_capability_matrix.md",
+     "missing_message": ".agent/adapters/_capability_matrix.md faltante",
+     "needles": [
+      {
+       "needle": "MENU_DUPLICADO",
+       "message": "_capability_matrix.md no tiene fila para la degradación MENU_DUPLICADO (FW-135)"
+      }
+     ]
+    },
+    {
+     "path": "GEMINI.md",
+     "missing_message": "GEMINI.md faltante — Antigravity lee AGENTS.md o GEMINI.md de la raíz; sin puntero, drift o vacío",
+     "needles": [
+      {
+       "needle": "AGENTS.md",
+       "message": "GEMINI.md no apunta a AGENTS.md"
+      }
+     ]
+    }
+   ]
+  },
+  "stack_escalado": {
+   "files": [
+    {
+     "path": ".agent/workflows/tech-design-mvp.md",
+     "missing_message": ".agent/workflows/tech-design-mvp.md faltante (FW-133)",
+     "needles": [
+      {
+       "needle": "Camino de escalado",
+       "case_sensitive": true,
+       "message": "tech-design-mvp.md paso 3 no declara la decisión de stack con camino de escalado"
+      },
+      {
+       "needle": "costura de escape",
+       "message": "tech-design-mvp.md no exige costura de escape en la decisión de stack"
+      },
+      {
+       "needle": "puerta de una sola",
+       "message": "tech-design-mvp.md no contempla declarar una pieza como puerta de una sola dirección cuando no hay costura razonable"
+      }
+     ]
+    },
+    {
+     "path": "_project/10_arch_constraints.md",
+     "missing_message": "_project/10_arch_constraints.md faltante (FW-133)",
+     "needles": [
+      {
+       "needle": "Camino de escalado",
+       "case_sensitive": true,
+       "message": "10_arch_constraints.md no tiene la tabla \"Camino de escalado\" del stack"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/nuevo-proyecto.md",
+     "missing_message": ".agent/workflows/nuevo-proyecto.md faltante",
+     "needles": [
+      {
+       "needle": "STACK PROPOSAL",
+       "case_sensitive": true,
+       "message": "nuevo-proyecto.md no propone el stack antes de pedírselo al builder (FW-133) — riesgo de volver a Q10 como pregunta directa sin criterio"
+      }
+     ]
+    }
+   ]
+  },
+  "cosecha_sesion": {
+   "files": [
+    {
+     "path": ".agent/prompts/cosecha_sesion.md",
+     "missing_message": ".agent/prompts/cosecha_sesion.md faltante: la cosecha de sesión no tiene prompt canónico",
+     "needles": [
+      {
+       "needle": "AGRUPA ANTES DE EMITIR",
+       "case_sensitive": true,
+       "message": "el prompt de cosecha no exige agrupar por clase; sin ese paso la cuenta se infla con instancias del mismo mecanismo"
+      },
+      {
+       "needle": "REGLA DE EVIDENCIA",
+       "case_sensitive": true,
+       "message": "el prompt de cosecha no exige evidencia literal; sin ella los hallazgos son inverificables"
+      },
+      {
+       "needle": "REGLA DE ALCANCE OBSERVADO",
+       "case_sensitive": true,
+       "message": "el prompt de cosecha no obliga a declarar qué tramo se leyó; una sesión compactada afirmaría sobre un resumen"
+      }
+     ]
+    },
+    {
+     "path": ".agent/docs/friction_buffer.md",
+     "missing_message": ".agent/docs/friction_buffer.md faltante: las clases de fricción no tienen dónde acumularse",
+     "needles": [
+      {
+       "needle": "Umbral de promoción",
+       "case_sensitive": true,
+       "message": "el búfer no declara umbral de promoción; sin él acumular no lleva a ninguna parte"
+      },
+      {
+       "needle": "Criterio de muerte",
+       "case_sensitive": true,
+       "message": "el búfer no declara criterio de muerte; un búfer que nadie promueve es un diario"
+      },
+      {
+       "needle": "Slugs en uso",
+       "case_sensitive": true,
+       "message": "el búfer no lista sus slugs; los cuasi-duplicados destruyen el conteo, que es lo único que aporta"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/cierre-modulo.md",
+     "missing_message": ".agent/workflows/cierre-modulo.md faltante para la cosecha de fricción",
+     "needles": [
+      {
+       "needle": "COSECHA DE FRICCIÓN DE SESIÓN",
+       "case_sensitive": true,
+       "message": "cierre-modulo no cosecha fricción; es la frontera con la transcripción entera"
+      },
+      {
+       "all": [
+        "DECLARAR, no ENCONTRAR",
+        "record_harvest",
+        "friction_buffer.md"
+       ],
+       "case_sensitive": true,
+       "message": "cierre-modulo debe declarar el gate real (record_harvest) y nombrar el destino de lo cosechado"
+      }
+     ],
+     "required_regex": [
+      {
+       "pattern": "LECCI[OÓ]N\\s*→\\s*proponerla, no escribirla",
+       "flags": "i",
+       "message": "cierre-modulo debe mantener la aprobación humana sobre las lecciones: una regla permanente que el agente se escribe solo es deriva silenciosa"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/gycd.md",
+     "missing_message": ".agent/workflows/gycd.md faltante para la consolidación de cosecha",
+     "needles": [
+      {
+       "needle": "Consolidar el búfer de fricción",
+       "case_sensitive": true,
+       "message": "gycd no consolida la cosecha"
+      },
+      {
+       "all": [
+        "no cosecha",
+        "compactado"
+       ],
+       "case_sensitive": true,
+       "message": "gycd debe declarar que consolida en vez de cosechar, y por qué: ahí el contexto suele estar compactado"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/retrospectiva-framework.md",
+     "missing_message": ".agent/workflows/retrospectiva-framework.md faltante",
+     "needles": [
+      {
+       "needle": "friction_buffer.md",
+       "case_sensitive": true,
+       "message": "la retrospectiva no lee el búfer; las clases acumuladas nunca llegarían a candidatas"
+      }
+     ]
+    }
+   ]
+  },
+  "modo_mantenimiento": {
+   "files": [
+    {
+     "path": ".agent/workflows/mantenimiento.md",
+     "missing_message": ".agent/workflows/mantenimiento.md faltante: /ciclo no tiene flujo para productos en producción (FW-225)",
+     "needles": [
+      {
+       "needle": "open_change",
+       "case_sensitive": true,
+       "message": "mantenimiento.md no abre el cambio vía open_change: el trabajo no queda en el estado"
+      },
+      {
+       "needle": "close_change",
+       "case_sensitive": true,
+       "message": "mantenimiento.md no cierra vía close_change: el gate mecánico del cambio no corre"
+      },
+      {
+       "needle": "escalate_change",
+       "case_sensitive": true,
+       "message": "mantenimiento.md no declara la escalada a módulo: un cambio tier_2 entraría por la ruta ligera"
+      },
+      {
+       "needle": "builder_confirmed",
+       "case_sensitive": true,
+       "message": "mantenimiento.md no fija que el ciclo de vida lo cambia solo el builder"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/ciclo.md",
+     "missing_message": ".agent/workflows/ciclo.md faltante",
+     "needles": [
+      {
+       "needle": "mantenimiento.md",
+       "case_sensitive": true,
+       "message": "ciclo.md no enruta a mantenimiento.md con lifecycle production (paso −1, FW-225)"
+      }
+     ],
+     "order_before": [
+      {
+       "first": "mantenimiento.md",
+       "then": "## Principio",
+       "message": "ciclo.md debe enrutar a mantenimiento.md antes del cuerpo del driver: si no, el agente carga los 22 KB antes de desviarse"
+      }
+     ]
+    }
+   ]
+  },
+  "politica_de_sesion": {
+   "files": [
+    {
+     "path": ".agent/rules/runtime_core.md",
+     "missing_message": ".agent/rules/runtime_core.md faltante: la política de sesión pierde una de sus superficies (5.3.0, FW-318)",
+     "needles": [
+      {
+       "needle": "prevés ausentarte más de ~1 h, cierra con `/gycd`; al volver, sesión nueva pegando el `Siguiente:`; si no tienes prompt o quieres ver el estado, `/arrancar`",
+       "case_sensitive": true,
+       "message": "runtime_core.md (punto 6) no lleva la frase única de política de sesión (FW-318): debe coincidir con el núcleo, /gycd, /arrancar y los adaptadores"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/gycd.md",
+     "missing_message": ".agent/workflows/gycd.md faltante: la política de sesión pierde una de sus superficies (5.3.0, FW-318)",
+     "needles": [
+      {
+       "needle": "prevés ausentarte más de ~1 h, cierra con `/gycd`; al volver, sesión nueva pegando el `Siguiente:`; si no tienes prompt o quieres ver el estado, `/arrancar`",
+       "case_sensitive": true,
+       "message": "gycd.md (paso 6) no lleva la frase única de política de sesión (FW-318): debe coincidir con el núcleo, /gycd, /arrancar y los adaptadores"
+      }
+     ]
+    },
+    {
+     "path": ".agent/workflows/arrancar.md",
+     "missing_message": ".agent/workflows/arrancar.md faltante: la política de sesión pierde una de sus superficies (5.3.0, FW-318)",
+     "needles": [
+      {
+       "needle": "prevés ausentarte más de ~1 h, cierra con `/gycd`; al volver, sesión nueva pegando el `Siguiente:`; si no tienes prompt o quieres ver el estado, `/arrancar`",
+       "case_sensitive": true,
+       "message": "arrancar.md (nota de política) no lleva la frase única de política de sesión (FW-318): debe coincidir con el núcleo, /gycd, /arrancar y los adaptadores"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/claude-code.md",
+     "missing_message": ".agent/adapters/claude-code.md faltante: la política de sesión pierde una de sus superficies (5.3.0, FW-318)",
+     "needles": [
+      {
+       "needle": "prevés ausentarte más de ~1 h, cierra con `/gycd`; al volver, sesión nueva pegando el `Siguiente:`; si no tienes prompt o quieres ver el estado, `/arrancar`",
+       "case_sensitive": true,
+       "message": "claude-code.md (SESSION_HYGIENE) no lleva la frase única de política de sesión (FW-318): debe coincidir con el núcleo, /gycd, /arrancar y los adaptadores"
+      }
+     ]
+    },
+    {
+     "path": ".agent/adapters/codex.md",
+     "missing_message": ".agent/adapters/codex.md faltante: la política de sesión pierde una de sus superficies (5.3.0, FW-318)",
+     "needles": [
+      {
+       "needle": "prevés ausentarte más de ~1 h, cierra con `/gycd`; al volver, sesión nueva pegando el `Siguiente:`; si no tienes prompt o quieres ver el estado, `/arrancar`",
+       "case_sensitive": true,
+       "message": "codex.md (SESSION_HYGIENE) no lleva la frase única de política de sesión (FW-318): debe coincidir con el núcleo, /gycd, /arrancar y los adaptadores"
+      }
+     ]
+    }
+   ]
+  },
+  "gate_exits": {
+   "$comment": "5.3.1 L3.6 (§2 del plan): cada gate que bloquea nombra su salida en el mensaje. Una entrada por fichero que emite el mensaje; tests/test_l3_salidas_de_gates.py produce el mensaje real de cada una y exige la salida.",
+   "files": [
+    {
+     "gate": "guard",
+     "path": ".agent/scripts/guard_destructive_command.py",
+     "missing_message": "guard_destructive_command.py faltante: el guard no puede nombrar su salida (§2)",
+     "needles": [{"needle": "APPROVED-DESTRUCTIVE", "case_sensitive": true, "message": "el mensaje del guard debe nombrar su salida APPROVED-DESTRUCTIVE (§2)"}]
+    },
+    {
+     "gate": "stubs",
+     "path": ".agent/scripts/validate_no_stubs.py",
+     "missing_message": "validate_no_stubs.py faltante: el detector de stubs no puede nombrar su salida (§2)",
+     "needles": [{"needle": "stub-ok", "case_sensitive": true, "message": "el mensaje del detector de stubs debe nombrar su salida stub-ok (§2)"}]
+    },
+    {
+     "gate": "secrets",
+     "path": ".agent/scripts/framework_doctor.py",
+     "missing_message": "framework_doctor.py faltante: el escáner de secretos no puede nombrar su salida (§2)",
+     "needles": [
+      {"needle": "márcalo junto al valor", "case_sensitive": true, "message": "el mensaje del escáner de secretos debe nombrar su salida para un valor ficticio: márcalo junto al valor (§2)"},
+      {"needle": "fichero ignorado", "case_sensitive": true, "message": "el mensaje del escáner de secretos debe nombrar su salida: fichero ignorado (§2)"}
+     ]
+    },
+    {
+     "gate": "suite",
+     "path": ".agent/scripts/pre_commit.sh",
+     "missing_message": "pre_commit.sh faltante: la suite del pre-commit no puede nombrar su salida (§2)",
+     "needles": [
+      {"needle": "documentary_paths", "case_sensitive": true, "message": "el mensaje de la suite del pre-commit debe nombrar documentary_paths (§2)"},
+      {"needle": "informe verde", "case_sensitive": true, "message": "el mensaje de la suite del pre-commit debe nombrar el informe verde del mismo árbol (§2)"}
+     ]
+    },
+    {
+     "gate": "bugs",
+     "path": ".agent/scripts/claude_continuity_hook.py",
+     "missing_message": "claude_continuity_hook.py faltante: el gate de bugs no puede nombrar su salida (§2)",
+     "needles": [
+      {"needle": "resolve_bug", "case_sensitive": true, "message": "el aviso de bloqueo del hook de continuidad debe nombrar resolve_bug (§2)"},
+      {"needle": "bug:BUG-NNN", "case_sensitive": true, "message": "el aviso de bloqueo del hook de continuidad debe nombrar la unidad bug:BUG-NNN (§2, FW-359)"}
+     ]
+    },
+    {
+     "gate": "bugs",
+     "path": ".agent/scripts/claude_dynamic_context.py",
+     "missing_message": "claude_dynamic_context.py faltante: el gate de bugs no puede nombrar su salida (§2)",
+     "needles": [
+      {"needle": "resolve_bug", "case_sensitive": true, "message": "el aviso de bloqueo del contexto dinámico debe nombrar resolve_bug (§2)"},
+      {"needle": "bug:BUG-NNN", "case_sensitive": true, "message": "el aviso de bloqueo del contexto dinámico debe nombrar la unidad bug:BUG-NNN (§2, FW-359)"}
+     ]
+    },
+    {
+     "gate": "evidence",
+     "path": ".agent/scripts/validate_acceptance.py",
+     "missing_message": "validate_acceptance.py faltante: el gate de evidencia no puede nombrar su salida (§2)",
+     "needles": [
+      {"needle": "retirado:", "case_sensitive": true, "message": "el mensaje del gate de evidencia debe nombrar su salida retirado: <ruta> (§2, TL-FW-323)"},
+      {"needle": "(no es ruta del repo)", "case_sensitive": true, "message": "el mensaje del gate de evidencia debe nombrar su salida (no es ruta del repo) (§2)"}
+     ]
+    },
+    {
+     "gate": "formats",
+     "path": ".agent/scripts/state_queries.py",
+     "missing_message": "state_queries.py faltante: el gate de formatos no puede nombrar su salida (§2)",
+     "needles": [{"needle": "(AC-n, …)", "case_sensitive": true, "message": "el formato aceptado del gate de implementación debe nombrar «(AC-n, …)» (§2, PA-FW-011)"}]
+    },
+    {
+     "gate": "receipts",
+     "path": ".agent/scripts/workflow_receipts.py",
+     "missing_message": "workflow_receipts.py faltante: el gate de recibos no puede nombrar su salida (§2)",
+     "needles": [{"needle": "refresh_approval_receipt", "case_sensitive": true, "message": "el mensaje de recibo caducado debe nombrar refresh_approval_receipt (§2)"}]
+    },
+    {
+     "gate": "turn_close",
+     "path": ".agent/scripts/turn_close_hook.py",
+     "missing_message": "turn_close_hook.py faltante: el bloqueo del cierre de turno no puede nombrar su salida (§2)",
+     "needles": [{"needle": "las líneas de cierre corregidas («Siguiente: …» ", "case_sensitive": true, "message": "el bloqueo del cierre de turno debe nombrar su salida: responder con las líneas de cierre corregidas (§2, FW-402)"}, {"needle": "sin repetir la respuesta anterior", "case_sensitive": true, "message": "el bloqueo del cierre de turno debe pedir que no se repita la respuesta (§2, FW-402)"}]
+    }
+   ]
+  }
+ }
+}

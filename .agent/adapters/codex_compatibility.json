@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "default_required_surfaces": [
+    "cli"
+  ],
+  "surfaces": [
+    "cli",
+    "desktop"
+  ],
+  "minimum_tested_versions": {
+    "cli": "0.142.3",
+    "desktop": "0.142.3"
+  },
+  "context_delivery": {
+    "tool": "get_work_context",
+    "views": ["startup", "implementation", "closure", "recovery"],
+    "startup_limit_bytes": 12288,
+    "detail_limit_bytes": 24576
+  },
+  "required_capabilities": {
+    "cli": [
+      "exec",
+      "preToolUse",
+      "postToolUse",
+      "stop",
+      "mcp:get_work_context",
+      "mcp:mutate_state"
+    ],
+    "desktop": [
+      "app-server",
+      "initialize",
+      "thread/start",
+      "turn/start",
+      "hook",
+      "mcp:get_work_context",
+      "mcp:mutate_state"
+    ]
+  }
+}

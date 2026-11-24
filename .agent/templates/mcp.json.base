@@ -1,0 +1,97 @@
+{
+  "$schema_note": "Plantilla del framework (ADR-015). Se copia a .mcp.json en la raíz del proyecto usuario por /nuevo-proyecto o /migrar-proyecto, opt-in con confirmación. La clave 'mcpServers' arranca ÚNICAMENTE con el servidor local del framework 'state_manager' (código repo-local, exento de supply-chain pinning): ningún MCP remoto se activa sin acción explícita del usuario. Para activar uno remoto, mover su definición desde '_disabled_examples' hasta 'mcpServers', reemplazar '<VERSION>' por la versión exacta verificada en la documentación oficial del MCP, y completar tokens/credenciales.",
+  "$supply_chain_rule": "Ningún ejemplo de esta plantilla declara versión implícita. Cada 'args' contiene '@<VERSION>' como marcador OBLIGATORIO. Activar un MCP sin reemplazar ese marcador por una versión exacta (semver fijado, commit hash o tag verificado) constituye una violación de supply-chain del framework y está prohibido por /nuevo-proyecto y /migrar-proyecto. Alternativa válida: declarar 'source: <fuente aprobada>' (repo+commit, mirror interno, artefacto firmado) cuando no aplique semver de npm.",
+  "mcpServers": {
+    "state_manager": {
+      "$purpose": "Framework state engine. Local, zero-dependency. Single write channel for 03_project_state.json; renders read-only projections. NOT a remote package — exempt from supply-chain pinning (runs repo-local code).",
+      "command": "python3",
+      "args": [".agent/scripts/state_manager.py"]
+    }
+  },
+  "_disabled_examples": {
+    "$comment": "MCPs recomendados por el workshop SDD. NO se activan hasta (a) reemplazar '<VERSION>' por versión exacta verificada, (b) mover el bloque a 'mcpServers' y (c) completar credenciales. Los paquetes nombrados son referencia educativa — verificar nombre real en la documentación oficial antes de instalar.",
+    "playwright": {
+      "$purpose": "Verificación ejecutable de UI web (paso 3.8 de /cierre-modulo). Habilita screenshot, navegación y aserciones sobre la app real. Si NO se activa, verificar-ejecutable cae en fallback manual reproducible (ADR-015).",
+      "$activation_steps": [
+        "1. Verificar nombre exacto del paquete y última versión estable en la documentación oficial.",
+        "2. Reemplazar '<VERSION>' por la versión exacta (ej: '0.5.2'). No usar 'latest' ni omitir.",
+        "3. Mover este bloque a 'mcpServers'."
+      ],
+      "command": "npx",
+      "args": ["-y", "@microsoft/mcp-server-playwright@<VERSION>"]
+    },
+    "context7": {
+      "$purpose": "Búsqueda en documentación oficial de librerías y frameworks. Útil para implementaciones que necesitan referencia exacta de API externa.",
+      "$activation_steps": [
+        "1. Verificar nombre y versión en documentación oficial.",
+        "2. Reemplazar '<VERSION>' por la versión exacta.",
+        "3. Mover a 'mcpServers'."
+      ],
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@<VERSION>"]
+    },
+    "sentry": {
+      "$purpose": "Acceso a errores y trazas reportadas en producción. Útil para /debug y para verificar que un fix realmente cierra un incidente.",
+      "$requires_env": ["SENTRY_AUTH_TOKEN", "SENTRY_ORG"],
+      "$activation_steps": [
+        "1. Verificar nombre y versión en documentación oficial.",
+        "2. Reemplazar '<VERSION>' por la versión exacta.",
+        "3. Completar SENTRY_AUTH_TOKEN y SENTRY_ORG (no commitear).",
+        "4. Mover a 'mcpServers'."
+      ],
+      "command": "npx",
+      "args": ["-y", "@sentry/mcp-server@<VERSION>"],
+      "env": {
+        "SENTRY_AUTH_TOKEN": "[completar — gestionar fuera de git]",
+        "SENTRY_ORG": "[completar]"
+      }
+    },
+    "atlassian": {
+      "$purpose": "Lectura/escritura de tickets en Jira y páginas de Confluence. Útil cuando la HU vive en Jira y /enriquecer-ticket la trae al scope.",
+      "$requires_env": ["ATLASSIAN_API_TOKEN", "ATLASSIAN_DOMAIN", "ATLASSIAN_EMAIL"],
+      "$activation_steps": [
+        "1. Verificar nombre y versión en documentación oficial.",
+        "2. Reemplazar '<VERSION>' por la versión exacta.",
+        "3. Completar credenciales fuera de git.",
+        "4. Mover a 'mcpServers'."
+      ],
+      "command": "npx",
+      "args": ["-y", "@atlassian/mcp-server@<VERSION>"],
+      "env": {
+        "ATLASSIAN_API_TOKEN": "[completar — gestionar fuera de git]",
+        "ATLASSIAN_DOMAIN": "[completar]",
+        "ATLASSIAN_EMAIL": "[completar]"
+      }
+    },
+    "figma": {
+      "$purpose": "Lectura de diseños en Figma. Útil cuando el ticket UI parte de un mock y /enriquecer-ticket necesita los specs visuales.",
+      "$requires_env": ["FIGMA_ACCESS_TOKEN"],
+      "$activation_steps": [
+        "1. Verificar nombre y versión en documentación oficial.",
+        "2. Reemplazar '<VERSION>' por la versión exacta.",
+        "3. Completar FIGMA_ACCESS_TOKEN fuera de git.",
+        "4. Mover a 'mcpServers'."
+      ],
+      "command": "npx",
+      "args": ["-y", "@figma/mcp-server@<VERSION>"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "[completar — gestionar fuera de git]"
+      }
+    },
+    "snyk": {
+      "$purpose": "Análisis de vulnerabilidades en dependencias y código. Complementa el SECURITY GATE de /cierre-modulo paso 4.",
+      "$requires_env": ["SNYK_TOKEN"],
+      "$activation_steps": [
+        "1. Verificar nombre y versión en documentación oficial.",
+        "2. Reemplazar '<VERSION>' por la versión exacta.",
+        "3. Completar SNYK_TOKEN fuera de git.",
+        "4. Mover a 'mcpServers'."
+      ],
+      "command": "npx",
+      "args": ["-y", "@snyk/mcp-server@<VERSION>"],
+      "env": {
+        "SNYK_TOKEN": "[completar — gestionar fuera de git]"
+      }
+    }
+  }
+}

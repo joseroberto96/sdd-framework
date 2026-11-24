@@ -1,0 +1,16 @@
+{"action": "ciclo_started", "payload": {"module": "C_viejo"}, "result": "ok", "ts": "2026-09-20T09:00:00+00:00"}
+{"action": "refresh_approval_receipt", "payload": {"module": "C_viejo", "_receipt": {"module": "C_viejo"}}, "result": "ok", "ts": "2026-09-20T09:10:00+00:00"}
+{"action": "complete_module", "payload": {"id": "C_viejo"}, "result": "ok", "ts": "2026-09-20T10:00:00+00:00"}
+{"action": "ciclo_started", "payload": {"module": "A_primero"}, "result": "ok", "ts": "2026-10-02T10:00:00+00:00"}
+{"action": "record_approval_receipt", "payload": {"module": "A_primero", "_receipt": {"module": "A_primero"}}, "result": "ok", "ts": "2026-10-02T10:05:00+00:00"}
+{"action": "refresh_approval_receipt", "payload": {"module": "A_primero", "_receipt": {"module": "A_primero"}}, "result": "ok", "ts": "2026-10-02T10:20:00+00:00"}
+{"action": "refresh_approval_receipt", "payload": {"module": "A_primero", "_receipt": {"module": "A_primero"}}, "result": "ok", "ts": "2026-10-02T10:40:00+00:00"}
+{"action": "record_review_receipt", "payload": {"module": "A_primero", "result": "pass"}, "result": "ok", "ts": "2026-10-02T11:00:00+00:00"}
+{"action": "record_review_receipt", "payload": {"module": "A_primero", "result": "pass"}, "result": "ok", "ts": "2026-10-02T11:30:00+00:00"}
+{"action": "complete_module", "payload": {"id": "A_primero"}, "result": "ok", "ts": "2026-10-02T12:00:00+00:00"}
+{"action": "ciclo_started", "payload": {"module": "B_segundo"}, "result": "ok", "ts": "2026-10-03T09:00:00+00:00"}
+{"action": "record_approval_receipt", "payload": {"module": "B_segundo", "_receipt": {"module": "B_segundo"}}, "result": "ok", "ts": "2026-10-03T09:10:00+00:00"}
+{"action": "record_review_receipt", "payload": {"module": "B_segundo", "result": "pass"}, "result": "ok", "ts": "2026-10-03T09:30:00+00:00"}
+{"action": "complete_module", "payload": {"id": "B_segundo"}, "result": "ok", "ts": "2026-10-03T10:00:00+00:00"}
+{"action": "ciclo_started", "payload": {"module": "D_abierto"}, "result": "ok", "ts": "2026-10-04T09:00:00+00:00"}
+{"action": "refresh_approval_receipt", "payload": {"module": "D_abierto", "_receipt": {"module": "D_abierto"}}, "result": "ok", "ts": "2026-10-04T09:30:00+00:00"}

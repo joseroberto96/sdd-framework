@@ -1,0 +1,7 @@
+paths:
+  /m1:
+    get:
+      description: lee m1
+  /m2:
+    get:
+      description: lee m2

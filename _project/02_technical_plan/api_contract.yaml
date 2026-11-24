@@ -1,0 +1,29 @@
+# Contrato HTTP/REST formal del proyecto.
+#
+# Lo escribe: /diseñar (paso tech-design-mvp) y /enriquecer-ticket
+# cuando el módulo activo expone o modifica endpoints HTTP/REST.
+#
+# Lo lee: /cambio-seguro (inventario PRESERVAR de endpoints),
+# /cierre-modulo (Spec Gate condicional),
+# /validate-arch (coherencia código↔contrato),
+# /enriquecer-ticket,
+# verificar-ejecutable (deriva llamadas curl/httpie desde aquí).
+#
+# Obligatoriedad: condicional (ADR-013).
+# Requerido cuando el módulo expone o modifica endpoints HTTP/REST.
+# Para módulos sin HTTP, marcar module_specs[module].api_contract = "n/a"
+# con justificación en _project/03_project_state.json.
+#
+# Estado de plantilla: sin endpoints reales hasta /nuevo-proyecto o /migrar-proyecto.
+
+openapi: 3.1.0
+info:
+  title: Contrato API del proyecto
+  version: 0.0.0
+  description: >-
+    Plantilla del framework. Sin endpoints reales hasta que el proyecto se
+    inicialice. Sustituir title, version y description al ejecutar
+    /nuevo-proyecto o /migrar-proyecto.
+paths: {}
+components:
+  schemas: {}

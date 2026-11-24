@@ -1,0 +1,4 @@
+# Diagnóstico de calidad de la plantilla. Requiere Ruff en PATH.
+# python3 .agent/scripts/validate_closure.py --calidad docs/quality.yaml
+commands:
+  ruff: ruff check --isolated --no-cache --select C901,E501 --line-length 120 --output-format concise .agent/scripts

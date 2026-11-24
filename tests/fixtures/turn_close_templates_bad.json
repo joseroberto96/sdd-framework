@@ -1,0 +1,232 @@
+[
+ {
+  "fichero": ".agent/workflows/actualizar-invariante.md",
+  "linea": 71,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /cambio-seguro Revisar impacto."
+ },
+ {
+  "fichero": ".agent/workflows/aprender-de-error.md",
+  "linea": 87,
+  "codigos": [
+   "SIN_COMANDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: [comando activo] — continuar flujo actual."
+ },
+ {
+  "fichero": ".agent/workflows/arrancar.md",
+  "linea": 86,
+  "codigos": [
+   "COMANDO_DESCONOCIDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: /<comando> <instrucción concreta, suficiente y necesaria>"
+ },
+ {
+  "fichero": ".agent/workflows/cambio-seguro.md",
+  "linea": 266,
+  "codigos": [
+   "COMILLAS_EN_COMANDO",
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: `/tdd` Aplicar cambio con prueba primero."
+ },
+ {
+  "fichero": ".agent/workflows/descubrir-producto.md",
+  "linea": 60,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /entrevistar Resolver la decisión de negocio."
+ },
+ {
+  "fichero": ".agent/workflows/diseñar.md",
+  "linea": 76,
+  "codigos": [
+   "COMILLAS_EN_COMANDO",
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: `/scope-siguiente` Abrir el primer módulo."
+ },
+ {
+  "fichero": ".agent/workflows/enriquecer-ticket.md",
+  "linea": 285,
+  "codigos": [
+   "COMILLAS_EN_COMANDO",
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: `/tdd` Implementar con prueba primero."
+ },
+ {
+  "fichero": ".agent/workflows/entrevistar.md",
+  "linea": 106,
+  "codigos": [
+   "SIN_COMANDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: [`/enriquecer-ticket` | `/clarificar`] — [razón corta]"
+ },
+ {
+  "fichero": ".agent/workflows/gycd.md",
+  "linea": 103,
+  "codigos": [
+   "COMANDO_DESCONOCIDO"
+  ],
+  "texto": "Siguiente: /{next_command} {next_action}"
+ },
+ {
+  "fichero": ".agent/workflows/instalar-skills.md",
+  "linea": 124,
+  "codigos": [
+   "SIN_COMANDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: [comando activo] — continuar flujo actual."
+ },
+ {
+  "fichero": ".agent/workflows/mantenimiento.md",
+  "linea": 87,
+  "codigos": [
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: /ciclo <siguiente ajuste concreto, o \"sin cambios pendientes\">"
+ },
+ {
+  "fichero": ".agent/workflows/migrar-proyecto.md",
+  "linea": 250,
+  "codigos": [
+   "COMILLAS_EN_COMANDO"
+  ],
+  "texto": "Siguiente: `/arrancar` Retomar con estado mínimo."
+ },
+ {
+  "fichero": ".agent/workflows/nueva-fase.md",
+  "linea": 105,
+  "codigos": [
+   "COMILLAS_EN_COMANDO",
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: `/scope-siguiente` Definir el primer módulo."
+ },
+ {
+  "fichero": ".agent/workflows/nuevo-bug.md",
+  "linea": 58,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /debug Resolver el bug bloqueante BUG-XXX."
+ },
+ {
+  "fichero": ".agent/workflows/nuevo-bug.md",
+  "linea": 60,
+  "codigos": [
+   "SIN_COMANDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: [comando activo] — continuar con la tarea actual."
+ },
+ {
+  "fichero": ".agent/workflows/nuevo-proyecto.md",
+  "linea": 310,
+  "codigos": [
+   "COMILLAS_EN_COMANDO"
+  ],
+  "texto": "Siguiente: `/diseñar` Aterrizar el MVP y el diseño."
+ },
+ {
+  "fichero": ".agent/workflows/prd-mvp.md",
+  "linea": 83,
+  "codigos": [
+   "COMILLAS_EN_COMANDO"
+  ],
+  "texto": "Siguiente: `/diseñar` Continuar el diseño técnico."
+ },
+ {
+  "fichero": ".agent/workflows/preflight-review.md",
+  "linea": 172,
+  "codigos": [
+   "COMANDO_DESCONOCIDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: /x [instrucción concreta y autosuficiente]"
+ },
+ {
+  "fichero": ".agent/workflows/preflight-review.md",
+  "linea": 177,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /tdd Implementar si PLAN_REVIEW es pass."
+ },
+ {
+  "fichero": ".agent/workflows/reconciliar.md",
+  "linea": 136,
+  "codigos": [
+   "COMANDO_DESCONOCIDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: /x [instrucción concreta y autosuficiente]"
+ },
+ {
+  "fichero": ".agent/workflows/refactorizar-arquitectura.md",
+  "linea": 30,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /validate-arch Validar el refactor."
+ },
+ {
+  "fichero": ".agent/workflows/skills.md",
+  "linea": 49,
+  "codigos": [
+   "SIN_COMANDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: [comando activo] — continuar flujo actual."
+ },
+ {
+  "fichero": ".agent/workflows/sugerir-skills.md",
+  "linea": 132,
+  "codigos": [
+   "SIN_COMANDO",
+   "MARCADOR"
+  ],
+  "texto": "Siguiente: [comando activo] — continuar flujo actual."
+ },
+ {
+  "fichero": ".agent/workflows/tech-design-mvp.md",
+  "linea": 146,
+  "codigos": [
+   "COMILLAS_EN_COMANDO",
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: `/scope-siguiente` Abrir el primer módulo."
+ },
+ {
+  "fichero": ".agent/workflows/validate-arch.md",
+  "linea": 124,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /publicar-github Publicar el hito validado."
+ },
+ {
+  "fichero": ".agent/workflows/validate-arch.md",
+  "linea": 126,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /refactorizar-arquitectura Corregir los hallazgos."
+ },
+ {
+  "fichero": ".agent/workflows/verificar-ejecutable.md",
+  "linea": 209,
+  "codigos": [
+   "COMANDO_INTERNO"
+  ],
+  "texto": "Siguiente: /cierre-modulo Continuar el gate."
+ }
+]

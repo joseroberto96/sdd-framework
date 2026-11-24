@@ -1,0 +1,51 @@
+{
+  "$schema_note": "Configuración local de hooks Codex del framework. Se genera en .codex/hooks.json; no copiar manualmente ni versionar. El runner registra evidencia JSONL append-only por run_id en CODEX_FRAMEWORK_SMOKE_MARKER cuando el smoke host lo proporciona; solo escribe si esa ruta está directamente en la carpeta smoke/ de la telemetría del proyecto (~/.cache/framework-v4/<proyecto>-<huella>/smoke/). El timeout del Stop (segundos) es el tiempo máximo del hook; sin él Codex aplica 600 s.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__CODEX_HOOK_COMMAND__:guard",
+            "statusMessage": "[FW-CODEX:guard] Revisando comando destructivo..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__CODEX_HOOK_COMMAND__:state",
+            "statusMessage": "[FW-CODEX:state] Comprobando actualización del estado..."
+          }
+        ]
+      },
+      {
+        "matcher": "apply_patch|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__CODEX_HOOK_COMMAND__:format",
+            "statusMessage": "[FW-CODEX:format] Formateando archivo editado si hay herramienta disponible..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__CODEX_HOOK_COMMAND__:stop",
+            "timeout": 15,
+            "statusMessage": "[FW-CODEX:stop] Recordatorio de cierre de sesión..."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "framework_version": "5.3.3",
+  "canonical_root": ".agent/workflows",
+  "commands": [
+    {
+      "name": "arrancar",
+      "description": "Inicio de sesión: consulta la vista de arranque, presenta estado actual y sugiere siguiente acción — Usar cuando: empieza una sesión de trabajo nueva.",
+      "source": ".agent/workflows/arrancar.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/arrancar.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "interruption_or_inconsistency", "command": "reconciliar"}, {"condition": "implementation", "command": "ciclo"}]
+      }
+    },
+    {
+      "name": "reconciliar",
+      "description": "Reconstruye verdad desde disco ante conversación no lineal, interrupciones o cambio de intención — Usar cuando: hay interrupción, compactación dudosa, recap inconsistente, cambio de intención o choque con el scope activo.",
+      "source": ".agent/workflows/reconciliar.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "recovery",
+        "required_now": [".agent/workflows/reconciliar.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "interruption_or_inconsistency", "command": "reconciliar"}]
+      }
+    },
+    {
+      "name": "gycd",
+      "description": "Guardar y Continuar Después: cierre ordenado de sesión — Usar cuando: termina la sesión y hay que persistir estado antes de cerrar.",
+      "source": ".agent/workflows/gycd.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "recovery",
+        "required_now": [".agent/workflows/gycd.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "recovery", "command": "reconciliar"}]
+      }
+    },
+    {
+      "name": "diseñar",
+      "description": "Pipeline de diseño unificado: descubrimiento → PRD → diseño técnico. Detecta qué pasos faltan y los ejecuta. Usar cuando: la fase o el producto están poco claros y hace falta descubrimiento, PRD o diseño técnico antes de implementar.",
+      "source": ".agent/workflows/diseñar.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/diseñar.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "tech-design-mvp"}]
+      }
+    },
+    {
+      "name": "entrevistar",
+      "description": "Entrevista de requisitos antes de cambios ambiguos o estructurales — Usar cuando: hay un módulo nuevo con lógica de negocio no trivial, un cambio estructural, un requisito ambiguo, o el módulo toca auth/roles/datos sensibles/dinero.",
+      "source": ".agent/workflows/entrevistar.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/entrevistar.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "tdd"}]
+      }
+    },
+    {
+      "name": "tdd",
+      "description": "Ciclo rojo-verde-refactor para implementación tier_1 o tier_2 — Usar cuando: se va a implementar lógica que probar en un cambio tier_1 o tier_2.",
+      "source": ".agent/workflows/tdd.md",
+      "claude_command": true,
+      "claude_inline_body": true,
+      "claude_dynamic_injection": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/tdd.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "tdd"}]
+      }
+    },
+    {
+      "name": "cierre-modulo",
+      "description": "Cierra un módulo con reconciliación, anti-regresión y gate de seguridad — Usar cuando: un módulo tiene sus ACs completos y hay que cerrarlo con reconciliación, anti-regresión y gate de seguridad.",
+      "source": ".agent/workflows/cierre-modulo.md",
+      "claude_command": true,
+      "claude_inline_body": true,
+      "claude_dynamic_injection": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "closure",
+        "required_now": [".agent/workflows/cierre-modulo.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "closure", "command": "cierre-modulo"}]
+      }
+    },
+    {
+      "name": "nuevo-bug",
+      "description": "Registra un bug sin interrumpir el flujo — Usar cuando: algo no funciona como se esperaba y hay que registrarlo sin romper el flujo actual.",
+      "source": ".agent/workflows/nuevo-bug.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/nuevo-bug.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "recovery", "command": "reconciliar"}]
+      }
+    },
+    {
+      "name": "scope-siguiente",
+      "description": "Define el siguiente scope activo — Usar cuando: un módulo acaba de cerrarse y hay que definir ACs y tareas del siguiente.",
+      "source": ".agent/workflows/scope-siguiente.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "closure",
+        "required_now": [".agent/workflows/scope-siguiente.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "ciclo"}]
+      }
+    },
+    {
+      "name": "enriquecer-ticket",
+      "description": "Refina una HU o módulo a tarea técnica detallada lista para implementación; refina module_specs — Usar cuando: el módulo activo ya tiene ACs iniciales pero falta detalle técnico (endpoints, validaciones, esquemas, criterios de test) antes de implementar.",
+      "source": ".agent/workflows/enriquecer-ticket.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/enriquecer-ticket.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "enriquecer-ticket"}]
+      }
+    },
+    {
+      "name": "verificar-ejecutable",
+      "description": "Verificación ejecutable invocada por /cierre-modulo paso 3.8; admite fallback manual reproducible (workflow interno, sin wrapper) — Usar cuando: hay que demostrar que un módulo funciona de verdad (no solo tests verdes) — invocado por /cierre-modulo paso 3.8.",
+      "source": ".agent/workflows/verificar-ejecutable.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "closure",
+        "required_now": [".agent/workflows/verificar-ejecutable.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "closure", "command": "verificar-ejecutable"}]
+      }
+    },
+    {
+      "name": "preflight-review",
+      "description": "Revisión read-only previa a CODE para planes, cambios y refactors — workflow interno — Usar cuando: un plan, ticket enriquecido, TDD, refactor o cambio sobre código existente puede estar a punto de omitir un gate del framework.",
+      "source": ".agent/workflows/preflight-review.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/preflight-review.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "preflight-review"}]
+      }
+    },
+    {
+      "name": "aprender-de-error",
+      "description": "Captura una lección de la conversación actual en _project/22_lessons.md tras aprobación explícita; no modifica CLAUDE.md — Usar cuando: el usuario corrige explícitamente un error del agente que revela un patrón repetible (\"no hagas X\", \"siempre haz Y\").",
+      "source": ".agent/workflows/aprender-de-error.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "recovery",
+        "required_now": [".agent/workflows/aprender-de-error.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "recovery", "command": "gycd"}]
+      }
+    },
+    {
+      "name": "retrospectiva-framework",
+      "description": "Cosecha la fricción del framework registrada durante el proyecto y clasifica candidatos a retroportar — Usar cuando: se cierra un proyecto o un hito grande y hay que cosechar la fricción del framework registrada durante el uso real.",
+      "source": ".agent/workflows/retrospectiva-framework.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "closure",
+        "required_now": [".agent/workflows/retrospectiva-framework.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "closure", "command": "cierre-modulo"}]
+      }
+    },
+    {
+      "name": "validate-arch",
+      "description": "Valida cumplimiento arquitectónico post-hito — Usar cuando: se acaba de generar código y hay que revisarlo por violaciones arquitectónicas antes de continuar.",
+      "source": ".agent/workflows/validate-arch.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/validate-arch.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "validate-arch"}]
+      }
+    },
+    {
+      "name": "cambio-seguro",
+      "description": "Gate anti-regresión para cambios sobre código existente — Usar cuando: se va a modificar código existente, durante refactors, fixes y cambios de UI/API.",
+      "source": ".agent/workflows/cambio-seguro.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/cambio-seguro.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "tdd"}]
+      }
+    },
+    {
+      "name": "debug",
+      "description": "Debug sistemático: reproducir, minimizar, instrumentar, fix, regresión — Usar cuando: hay un bug, un fallo de test o un comportamiento inesperado que requiere reproducir, minimizar e instrumentar antes de proponer un fix.",
+      "source": ".agent/workflows/debug.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/debug.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "recovery", "command": "reconciliar"}]
+      }
+    },
+    {
+      "name": "clarificar",
+      "description": "Registra una ambigüedad y bloquea tareas dependientes — Usar cuando: aparece una ambigüedad de negocio o técnica que bloquea tareas dependientes hasta resolverse.",
+      "source": ".agent/workflows/clarificar.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/clarificar.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "recovery", "command": "reconciliar"}]
+      }
+    },
+    {
+      "name": "nueva-fase",
+      "description": "Transición controlada entre fases — Usar cuando: la fase activa terminó y hay que hacer una transición controlada a la siguiente.",
+      "source": ".agent/workflows/nueva-fase.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "closure",
+        "required_now": [".agent/workflows/nueva-fase.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "closure", "command": "cierre-modulo"}]
+      }
+    },
+    {
+      "name": "publicar-github",
+      "description": "Publica fase 0/MVP en GitHub con gate de secretos — Usar cuando: el usuario quiere subir el proyecto a GitHub, crear el repositorio, publicar la fase 0 o compartir actualizaciones.",
+      "source": ".agent/workflows/publicar-github.md",
+      "claude_command": true,
+      "disable_model_invocation": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "closure",
+        "required_now": [".agent/workflows/publicar-github.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "publish", "command": "publicar-github"}]
+      }
+    },
+    {
+      "name": "nuevo-proyecto",
+      "description": "Inicializa un proyecto nuevo con artefactos del framework — Usar cuando: se inicializa un proyecto nuevo desde cero con los artefactos del framework.",
+      "source": ".agent/workflows/nuevo-proyecto.md",
+      "claude_command": true,
+      "disable_model_invocation": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/nuevo-proyecto.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "ciclo"}]
+      }
+    },
+    {
+      "name": "migrar-proyecto",
+      "description": "Adopta el framework en un proyecto existente — Usar cuando: hay que adoptar el framework en un proyecto ya existente, infiriendo stack, módulos y dominio desde el código.",
+      "source": ".agent/workflows/migrar-proyecto.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/migrar-proyecto.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "ciclo"}]
+      }
+    },
+    {
+      "name": "actualizar-framework",
+      "description": "Actualiza el framework (.agent/ + wrappers) en un proyecto inicializado sin tocar el estado del producto — Usar cuando: el doctor advierte que el proyecto corre una framework_version anterior a la de la plantilla, o el usuario quiere adoptar una versión nueva en un proyecto vivo.",
+      "source": ".agent/workflows/actualizar-framework.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/actualizar-framework.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "recovery", "command": "reconciliar"}]
+      }
+    },
+    {
+      "name": "refactorizar-arquitectura",
+      "description": "Auditoría y refactor arquitectónico con gate anti-regresión — Usar cuando: 3 o más módulos llevan tiempo sin higiene arquitectónica y hace falta auditar acoplamiento y entropía.",
+      "source": ".agent/workflows/refactorizar-arquitectura.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/refactorizar-arquitectura.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "preflight-review"}]
+      }
+    },
+    {
+      "name": "skills",
+      "description": "Gestión de skills: sin argumentos sugiere, con 'instalar [fuente]' instala localmente — Usar cuando: hay señales de que falta una skill técnica (sin argumentos, sugiere) o el usuario ya aprobó una fuente para instalar (con 'instalar [fuente]').",
+      "source": ".agent/workflows/skills.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/skills.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "skills"}]
+      }
+    },
+    {
+      "name": "añadir-experto",
+      "description": "Crea o enriquece un experto de dominio — Usar cuando: el builder pide directamente un experto de dominio, o quiere enriquecer uno existente con fuentes reales.",
+      "source": ".agent/workflows/añadir-experto.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/añadir-experto.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "añadir-experto"}]
+      }
+    },
+    {
+      "name": "actualizar-invariante",
+      "description": "Único workflow autorizado para modificar 03_invariants.md — requiere razón y aprobación explícita — Usar cuando: una regla de negocio, flujo de datos o concepto de dominio genuinamente cambió — nunca por conveniencia técnica del agente.",
+      "source": ".agent/workflows/actualizar-invariante.md",
+      "claude_command": true,
+      "disable_model_invocation": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/actualizar-invariante.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "cambio-seguro"}]
+      }
+    },
+    {
+      "name": "descubrir-producto",
+      "description": "Descubre producto, usuario, quick win y riesgos — llamado internamente por /diseñar — Usar cuando: se inicia un proyecto nuevo, se migra uno confuso, o antes de una fase importante y hace falta convertir una idea amplia en contexto accionable.",
+      "source": ".agent/workflows/descubrir-producto.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/descubrir-producto.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "always", "command": "diseñar"}]
+      }
+    },
+    {
+      "name": "prd-mvp",
+      "description": "Genera o actualiza PRD ligero — llamado internamente por /diseñar — Usar cuando: después de /descubrir-producto, antes de dividir en módulos, o cuando el scope crece sin claridad.",
+      "source": ".agent/workflows/prd-mvp.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/prd-mvp.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "always", "command": "diseñar"}]
+      }
+    },
+    {
+      "name": "tech-design-mvp",
+      "description": "Diseño técnico MVP con contratos y trade-offs — llamado internamente por /diseñar — Usar cuando: después de /prd-mvp o antes de implementar un hito con impacto técnico y hace falta arquitectura, contratos y plan por módulos.",
+      "source": ".agent/workflows/tech-design-mvp.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/tech-design-mvp.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "tech-design-mvp"}]
+      }
+    },
+    {
+      "name": "instalar-skills",
+      "description": "Instala skills locales con procedencia — llamado internamente por /skills instalar — Usar cuando: el usuario quiere añadir habilidades técnicas, UI/UX, de dominio o tooling al proyecto de forma local y reproducible.",
+      "source": ".agent/workflows/instalar-skills.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/instalar-skills.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "skills"}]
+      }
+    },
+    {
+      "name": "sugerir-skills",
+      "description": "Propone skills según señales de tarea — llamado internamente por /skills — Usar cuando: al diseñar, al enriquecer un ticket, al inicio de sesión ante señales claras, o cuando el agente se siente limitado por falta de criterio de dominio o técnico.",
+      "source": ".agent/workflows/sugerir-skills.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/sugerir-skills.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "always", "command": "skills"}]
+      }
+    },
+    {
+      "name": "lean-context",
+      "description": "Genera contexto mínimo para un módulo — workflow manual avanzado — Usar cuando: hay que generar contexto mínimo para retomar un módulo sin releer todo el estado — workflow manual avanzado.",
+      "source": ".agent/skills/prompt_lean.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "recovery",
+        "required_now": [".agent/skills/prompt_lean.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "interruption_or_inconsistency", "command": "reconciliar"}]
+      }
+    },
+    {
+      "name": "crear-sesion-artefactos",
+      "description": "Sub-workflow interno — crea artefactos auxiliares de sesión y _refs. Invocado por /nuevo-proyecto y /migrar-proyecto — Usar cuando: termina /nuevo-proyecto o /migrar-proyecto y hay que crear los artefactos auxiliares de sesión y _refs — no se invoca directamente.",
+      "source": ".agent/workflows/crear-sesion-artefactos.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/crear-sesion-artefactos.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "always", "command": "nuevo-proyecto"}]
+      }
+    },
+    {
+      "name": "foco",
+      "description": "Cambia el foco activo a un área (frontend, backend, data, seguridad, testing) — sube la verbosidad y rutea al skill core de esa superficie — Usar cuando: el builder quiere profundizar en una superficie concreta del producto (frontend, backend, data, seguridad, testing) durante la sesión.",
+      "source": ".agent/workflows/foco.md",
+      "claude_command": true,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/foco.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "foco"}]
+      }
+    },
+    {
+      "name": "ciclo",
+      "description": "Driver autónomo — por defecto UN módulo de scope a cierre con todos los gates; \"/ciclo fase\" encadena la fase y \"--paralelo\" (opt-in) despacha módulos independientes a ejecutores en worktrees. Se para ante STOP GATE, gates o decisiones de builder — Usar cuando: hay que llevar un módulo (o una fase con /ciclo fase) de scope a cierre con todos los gates del framework.",
+      "source": ".agent/workflows/ciclo.md",
+      "claude_command": true,
+      "builder_facing": true,
+      "context": {
+        "entry_view": "implementation",
+        "required_now": [".agent/workflows/ciclo.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "ciclo"}, {"condition": "closure", "command": "cierre-modulo"}]
+      }
+    },
+    {
+      "name": "mantenimiento",
+      "description": "(interno — lo invoca /ciclo) Flujo ligero para un proyecto en producción: un cambio acotado con gates mecánicos y escalada automática a módulo — Usar cuando: lifecycle.stage es production y el builder pide un ajuste o fix.",
+      "source": ".agent/workflows/mantenimiento.md",
+      "claude_command": false,
+      "builder_facing": false,
+      "context": {
+        "entry_view": "startup",
+        "required_now": [".agent/workflows/mantenimiento.md", ".agent/rules/runtime_core.md"],
+        "activate_when": [{"condition": "implementation", "command": "ciclo"}]
+      }
+    }
+  ],
+  "claude_rules": [
+    {
+      "name": "frontend-design",
+      "source": ".agent/skills/frontend_design.md",
+      "paths": [
+        "**/*.{html,jsx,tsx,vue,svelte,css,scss}"
+      ],
+      "description": "Obligaciones de diseño frontend y chunking de componentes aplicadas a archivos de UI"
+    },
+    {
+      "name": "cross-platform-web",
+      "source": ".agent/skills/cross_platform_web.md",
+      "paths": [
+        "**/*.{html,css,scss,js,jsx,ts,tsx,mjs,cjs}",
+        "package.json"
+      ],
+      "description": "Obligaciones técnicas de compatibilidad web cross-platform aplicadas a archivos de código"
+    }
+  ]
+}

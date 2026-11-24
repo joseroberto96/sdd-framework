@@ -1,0 +1,58 @@
+{
+ "framework_mode": "initialized",
+ "current_phase": "phase_01",
+ "module_specs": {
+  "m1": {
+   "api_contract": "n/a",
+   "data_model": "n/a"
+  },
+  "m2": {
+   "api_contract": "n/a",
+   "data_model": "n/a"
+  },
+  "m3": {
+   "api_contract": "n/a",
+   "data_model": "n/a"
+  },
+  "m4": {
+   "api_contract": "n/a",
+   "data_model": "n/a"
+  },
+  "m5": {
+   "api_contract": "n/a",
+   "data_model": "n/a"
+  },
+  "m6": {
+   "api_contract": "n/a",
+   "data_model": "n/a"
+  },
+  "m7_sin_mapa": {
+   "api_contract": "n/a",
+   "data_model": "n/a"
+  }
+ },
+ "module_statuses": {
+  "m1": "completed",
+  "m2": "completed",
+  "m3": "completed",
+  "m4": "completed",
+  "m5": "completed",
+  "m6": "completed",
+  "m7_sin_mapa": "completed",
+  "m8_sin_rutas": "completed"
+ },
+ "modules": {
+  "completed": [
+   "m1",
+   "m2",
+   "m3",
+   "m4",
+   "m5",
+   "m6"
+  ],
+  "in_progress": [],
+  "pending": [
+   "m7_sin_mapa"
+  ]
+ }
+}

@@ -1,0 +1,13 @@
+# Configuración MCP nativa de Codex para el framework.
+# Se materializa en .codex/config.toml, configuración de proyecto que puede
+# versionarse. Los hooks locales viven aparte en .codex/hooks.json y se ignoran.
+# Este archivo es la fuente Codex-native; .mcp.json es solo un espejo opcional.
+# Los servidores remotos siguen siendo opt-in y no se declaran aquí.
+
+# "writes": Codex pide aprobación solo para herramientas no marcadas como de solo lectura
+# (las lecturas de state_manager declaran readOnlyHint; mutate_state no).
+# Fuente: https://learn.chatgpt.com/docs/extend/mcp · pendiente de prueba con sesión Codex real (FW-309).
+[mcp_servers.state_manager]
+command = "python3"
+default_tools_approval_mode = "writes"
+args = [".agent/scripts/state_manager.py"]

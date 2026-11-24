@@ -1,0 +1,10 @@
+python3 - <<'PY'
+from pathlib import Path
+
+target = Path("tests/test_ejemplo.py")
+target.write_text(
+    "def test_limpia_tabla(tmp_path):\n"
+    "    con = sqlite3.connect(tmp_path / 'base.db')\n"
+    "    con.execute('DROP TABLE tabla_de_ejemplo')\n"
+)
+PY

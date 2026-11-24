@@ -1,0 +1,97 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.agent/scripts/guard_destructive_command.py",
+            "statusMessage": "Production Command Guard: revisando comando destructivo (FW-082)...",
+            "onFailure": "block"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.agent/scripts/turn_close_hook.py --host claude || true",
+            "statusMessage": "Verificando el cierre del turno...",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sid=$(python3 -c \"import json,re,sys;print(re.sub(r'[^A-Za-z0-9_-]','',str(json.load(sys.stdin).get('session_id','x'))) or 'x')\" 2>/dev/null || echo x); f=\"/tmp/cc_err_count_$sid\"; n=$(cat \"$f\" 2>/dev/null || echo 0); n=$((n+1)); echo $n > \"$f\"; [ $n -ge 2 ] && { echo 0 > \"$f\"; echo '{\"systemMessage\": \"Varios errores de Bash en esta sesión. Considera invocar /debug para un diagnóstico sistemático.\"}'; } || true",
+            "statusMessage": "Contando errores de Bash de esta sesión..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); path=$(printf '%s' \"$input\" | python3 -c \"import json,sys; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('file_path',''))\" 2>/dev/null); [ -n \"$path\" ] && CLAUDE_TOOL_FILE_PATH=\"$path\" \"$CLAUDE_PROJECT_DIR\"/.agent/scripts/post_edit_format.sh || true",
+            "statusMessage": "Formateando archivo editado si hay herramienta disponible..."
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push * --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push * -f *)",
+      "Bash(git push --mirror *)",
+      "Bash(git push * --mirror *)",
+      "Bash(git push * +*)",
+      "Bash(git reset --hard origin/*)",
+      "Bash(git reset --hard upstream/*)",
+      "Bash(git reset --hard @{u} *)",
+      "Bash(git reset --hard @{upstream} *)",
+      "Bash(supabase db push *)",
+      "Bash(supabase db reset *)",
+      "Bash(npx supabase db push *)",
+      "Bash(npx supabase db reset *)",
+      "Bash(prisma db push *)",
+      "Bash(npx prisma db push *)",
+      "Bash(prisma migrate reset *)",
+      "Bash(npx prisma migrate reset *)",
+      "Bash(drizzle-kit push *)",
+      "Bash(npx drizzle-kit push *)",
+      "Bash(npm run db:push *)",
+      "Bash(pnpm db:push *)",
+      "Bash(pnpm run db:push *)",
+      "Bash(yarn db:push *)",
+      "Bash(psql *DROP TABLE*)",
+      "Bash(psql *DROP DATABASE*)",
+      "Bash(psql *DROP SCHEMA*)",
+      "Bash(psql *TRUNCATE *)",
+      "Bash(mysql *DROP TABLE*)",
+      "Bash(mysql *DROP DATABASE*)",
+      "Bash(mysql *DROP SCHEMA*)",
+      "Bash(mysql *TRUNCATE *)",
+      "Bash(mariadb *DROP TABLE*)",
+      "Bash(mariadb *DROP DATABASE*)",
+      "Bash(mariadb *DROP SCHEMA*)",
+      "Bash(mariadb *TRUNCATE *)",
+      "Bash(sqlite3 *DROP TABLE*)",
+      "Bash(php artisan migrate --force *)",
+      "Bash(php artisan migrate * --force *)"
+    ]
+  }
+}

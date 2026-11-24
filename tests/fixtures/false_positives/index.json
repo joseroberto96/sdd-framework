@@ -1,0 +1,115 @@
+{
+  "materializacion": "Los ficheros del escáner llevan marcadores {{NOMBRE}} en lugar del hex: un hex real en un fichero versionado dispara el escáner del propio repo (framework_doctor, pre-commit). El campo 'materializar' de cada caso da, por marcador, la semilla y la longitud: hex = sha256(semilla)[:longitud]. Sustituir los marcadores reproduce la forma exacta que dispara el gate.",
+  "descripcion": "Corpus de falsos positivos (5.3.0 L1). Casos reales reducidos a su forma, sin datos de producto: rutas, nombres, bases y hashes son sintéticos. Lo consumirá un lote posterior; ningún test lo ejecuta contra el guard ni el escáner todavía.",
+  "veredicto_esperado_comun": "permitir",
+  "casos": [
+    {
+      "id": "FP-G01",
+      "familia": "guard",
+      "origen": "Example Lab FW-300",
+      "descripcion": "Heredoc de Python que solo escribe en un fichero de tests una sentencia de borrado de tabla como texto.",
+      "fichero": "guard_destructivo_01_sql_en_heredoc.txt",
+      "veredicto_esperado": "permitir"
+    },
+    {
+      "id": "FP-G02",
+      "familia": "guard",
+      "origen": "Example Lab FW-303",
+      "descripcion": "Borrado de carpetas propias en el scratchpad de la sesión con la ruta dada por variable.",
+      "fichero": "guard_destructivo_02_borrar_clones_en_scratchpad.txt",
+      "veredicto_esperado": "permitir"
+    },
+    {
+      "id": "FP-G03",
+      "familia": "guard",
+      "origen": "Example Lab FW-306",
+      "descripcion": "Script de Python que ejecuta PRAGMA wal_checkpoint(TRUNCATE) sobre una base temporal (no borra filas).",
+      "fichero": "guard_destructivo_03_wal_checkpoint_en_python.txt",
+      "veredicto_esperado": "permitir"
+    },
+    {
+      "id": "FP-G04",
+      "familia": "guard",
+      "origen": "Example Lab FW-312",
+      "descripcion": "Heredoc de Python que edita un texto del scratchpad y solo contiene en una cadena la frase que prohíbe git push --delete.",
+      "fichero": "guard_destructivo_04_prosa_con_git_push_en_cadena.txt",
+      "veredicto_esperado": "permitir"
+    },
+    {
+      "id": "FP-G05",
+      "familia": "guard",
+      "origen": "Example Tool TALLO-FW-236",
+      "descripcion": "sqlite3 con PRAGMA wal_checkpoint(TRUNCATE) sobre un respaldo: consolida el WAL, no borra filas.",
+      "fichero": "guard_destructivo_05_wal_checkpoint_sobre_respaldo.txt",
+      "veredicto_esperado": "permitir"
+    },
+    {
+      "id": "FP-G06",
+      "familia": "guard",
+      "origen": "Research App PA-FW-001",
+      "descripcion": "Script de Python de edición Markdown (read_text/write_text) con términos de borrado solo dentro de una cadena.",
+      "fichero": "guard_destructivo_06_edicion_markdown_con_terminos.txt",
+      "veredicto_esperado": "permitir"
+    },
+    {
+      "id": "FP-S01",
+      "familia": "scanner",
+      "origen": "Example Lab FW-305",
+      "descripcion": "Identificador lbx- más 32 hex (derivado por SHA-256) literal en un test: huella de identidad pública.",
+      "fichero": "escaner_secretos_01_vector_dorado_con_prefijo.txt",
+      "veredicto_esperado": "permitir",
+      "materializar": {
+        "HEX32": {
+          "semilla": "vector-dorado-1",
+          "longitud": 32
+        }
+      }
+    },
+    {
+      "id": "FP-S02",
+      "familia": "scanner",
+      "origen": "Example Tool TALLO-FW-235",
+      "descripcion": "Hash SHA-256 de un fichero en una tabla de inventario documental, sin marcador junto a la huella.",
+      "fichero": "escaner_secretos_02_huella_en_inventario_documental.txt",
+      "veredicto_esperado": "permitir",
+      "materializar": {
+        "HEX64_A": {
+          "semilla": "inventario-1",
+          "longitud": 64
+        },
+        "HEX64_B": {
+          "semilla": "inventario-2",
+          "longitud": 64
+        }
+      }
+    },
+    {
+      "id": "FP-S03",
+      "familia": "scanner",
+      "origen": "Example Tool TALLO-FW-237",
+      "descripcion": "Huella de 64 hex en un documento nuevo sin versionar (el doctor solo la ve al añadirlo al índice).",
+      "fichero": "escaner_secretos_03_huella_en_documento_nuevo.txt",
+      "veredicto_esperado": "permitir",
+      "materializar": {
+        "HEX64": {
+          "semilla": "documento-fuente",
+          "longitud": 64
+        }
+      }
+    },
+    {
+      "id": "FP-S04",
+      "familia": "scanner",
+      "origen": "Research App PA-FW-002",
+      "descripcion": "Línea «SHA-256 del documento final: <hash>» con el marcador fuera de la ventana de ±24 caracteres.",
+      "fichero": "escaner_secretos_04_sha256_del_documento_final.txt",
+      "veredicto_esperado": "permitir",
+      "materializar": {
+        "HEX64": {
+          "semilla": "documento-final",
+          "longitud": 64
+        }
+      }
+    }
+  ]
+}

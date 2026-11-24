@@ -1,0 +1,19 @@
+# Calidad en aviso (5.3.1 L7). Para activarla, copia este fichero a `_project/quality.yaml`.
+# validate_closure.py ejecuta cada orden y /cierre-modulo adjunta la salida al cierre como
+# aviso: nunca bloquea. Sin `_project/quality.yaml`, el cierre dice «calidad: no configurada».
+#
+# - Cada herramienta se configura en su fichero estándar (pyproject.toml, eslint.config.*,
+#   .jscpd.json); aquí solo va la orden. El framework no instala nada: si falta, se dice y se sigue.
+# - No es YAML completo: cada línea sangrada `nombre: orden` del fichero es una orden, sin comillas.
+# - La orden se parte como en el shell, pero no pasa por él: sin tuberías ni redirecciones.
+#   Un `#` empieza un comentario. Con npx, usa `npx --no`, que no descarga nada.
+# - Cada orden corre en cada pre-validación del cierre, hasta 600 s: elige órdenes rápidas.
+# - Excluye `.agent`: es el código del framework, no el del proyecto.
+# - Diagnóstico es una línea `ruta:línea[:col]: mensaje`, con rutas relativas. De una salida
+#   sin diagnósticos se adjuntan sus 5 últimas líneas.
+# - Línea base opcional: guarda la salida de una orden en `quality_baseline_<nombre>.txt`,
+#   junto a este fichero. Lo que no esté en ella sale marcado NUEVO, sin mirar línea ni columna.
+commands:
+  ruff: ruff check --output-format concise --extend-exclude .agent .
+  # eslint: npx --no eslint --format unix .   # con eslint 9, `--format unix` pide eslint-formatter-unix
+  # jscpd: npx --no jscpd src

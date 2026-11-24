@@ -1,0 +1,237 @@
+{
+  "_bugs": [],
+  "_clarifications": [],
+  "_decisions": [
+    {
+      "context": "c",
+      "decision": "usar una cola",
+      "id": "ADR-001",
+      "module_id": "M1",
+      "title": "Cola"
+    },
+    {
+      "context": "c",
+      "decision": "informes en HTML",
+      "id": "ADR-010",
+      "module_id": "M2",
+      "title": "Informes"
+    },
+    {
+      "context": "c",
+      "decision": "fijar el umbral medido",
+      "documents_decision": "ADR-010",
+      "id": "ADR-011",
+      "module_id": "M2",
+      "title": "Umbral"
+    }
+  ],
+  "_refs": {
+    "acceptance": "_project/08_module_acceptance.md",
+    "api_contract": "_project/02_technical_plan/api_contract.yaml",
+    "arch_constraints": "_project/10_arch_constraints.md",
+    "arch_decisions": "_project/03_arch_decisions.md",
+    "bugs": "_project/06_bug_fixes.md",
+    "builder_profile": "_project/20_builder_profile.md",
+    "contracts": "_project/03_contracts.md",
+    "core": "_project/core.md",
+    "core_skills": "_project/19_core_skills.md",
+    "data_model": "_project/02_technical_plan/data_model.md",
+    "design_profile": "_project/12_design_profile.md",
+    "domain_profile": "_project/09_domain_profile.md",
+    "environment_profile": "_project/15_environment_profile.md",
+    "file_dependencies": "_project/11_file_dependencies.md",
+    "knowledge_map": "_project/21_knowledge_map.md",
+    "llms_map": "llms.txt",
+    "product_requirements": "_project/01_product_requirements.md",
+    "project_state_schema": ".agent/schemas/project_state.schema.json",
+    "release_profile": "_project/16_release_profile.md",
+    "scope": "_project/04_active_scope.md",
+    "session_brief": "_project/00_session_brief.json",
+    "session_journal": "_project/13_session_journal.md",
+    "skill_provenance": "_project/14_skill_provenance.md",
+    "skill_recommendations": "_project/17_skill_recommendations.md",
+    "workflow_manifest": ".agent/workflows/manifest.json"
+  },
+  "active_mcps": [],
+  "architecture_constraints": [],
+  "closure_rejections": [],
+  "contracts": {
+    "public_interfaces": {}
+  },
+  "current_phase": "phase_01",
+  "current_step": "",
+  "dependencies": [],
+  "framework_mode": "initialized",
+  "framework_version": "5.3.0",
+  "last_completed_step": "",
+  "module_specs": {
+    "M1": {
+      "api_contract": "n/a",
+      "classified_at": "2026-10-20T09:00:00+00:00",
+      "classified_by": "scope-siguiente",
+      "data_model": "required",
+      "justification": "sin API"
+    },
+    "M2": {
+      "api_contract": "required",
+      "classified_at": "2026-10-20T09:00:00+00:00",
+      "classified_by": "scope-siguiente",
+      "data_model": "n/a",
+      "justification": "sin tablas"
+    }
+  },
+  "module_statuses": {
+    "M1": "in_progress",
+    "M2": "not_started"
+  },
+  "modules": {
+    "completed": [],
+    "in_progress": [
+      "M1"
+    ],
+    "pending": [
+      "M2"
+    ]
+  },
+  "project": "fixture_pre_l4",
+  "stack": {
+    "auth": "",
+    "backend": "",
+    "database": "",
+    "frontend": ""
+  },
+  "work_tiers": {
+    "M1": {
+      "classified_at": "2026-10-20T09:00:00+00:00",
+      "classified_by": "scope-siguiente",
+      "rationale": "toca el modelo",
+      "tier": "tier_2"
+    },
+    "M2": {
+      "classified_at": "2026-10-20T09:00:00+00:00",
+      "classified_by": "scope-siguiente",
+      "rationale": "informes",
+      "tier": "tier_1"
+    }
+  },
+  "workflow_receipts": {
+    "approvals": {
+      "M1": {
+        "adr_refs": [
+          "ADR-001"
+        ],
+        "approval_evidence": "Sí, adelante con M1",
+        "approved_at": "2026-10-20T10:00:00+00:00",
+        "approved_by": "builder",
+        "approved_dependencies": [],
+        "basis": {
+          "acceptance": "ad885b77d79259ae4e6fbfc50c601fe0378444417b826aa206c652160e0f961f",
+          "active_scope": "05f941191ddfb845b50131b60be24b3b5c1f89f72478c3cf70afd189d5293d20",
+          "api_contract": "67326b1224af2437bd1ddf39b459703b62a71ae0b5e25c5bb06ce416883da6cc",
+          "contracts": "f06abf011da20663e6c878ad354d8deba820009e2ad4710ed8beaf55d8fa8ff8",
+          "current_phase": "72e26e73d3942e33a456547a7fd9bf7e45a24edad5175db33bb09b03e141820a",
+          "data_model": "86f4d2696fa21ca1027392a82f81dafdee9ba119c36ac44232019f24b9b2c600",
+          "decisions": "e90c12f426c8e8a48f7e6180825c0174d2e66f9e69c304e28231bbff753fdad6",
+          "dependencies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "module_spec": "78013768d0228b17d725e58c2a650c2f3aa0b73170476c5e985ca579816d2fdc",
+          "phase_plan": "0c4279fbe953119cda50e061e08e12ade488098471322bb40978d45c9f230b8c",
+          "prd": "d8cb68f643bd7b3cf4ac368bae45dd846285f47f16b7db52fc2d96374bbccab7",
+          "tier": "481ba8b52a77dd9984dc68374bb5602194bb268f30a1b8f39364f528a2c17863"
+        },
+        "basis_version": 3,
+        "covers_dependencies": [],
+        "derived_snapshot_ref": "faf4c66f986638f4d543f87b448e247459196c740b9b08292eedea8eee0a77ea",
+        "fingerprint": "ab4828c1649670ecc0ef9e2f494220472aa1de2463ed8b6a5ccbf08b9d3ec9b2",
+        "foreign_sections": {
+          "acceptance": [
+            "## Módulo 2 — Dos (`M2`)"
+          ],
+          "active_scope": [
+            "## M2"
+          ]
+        },
+        "head_at_approval": null,
+        "identity_kind": "sha256",
+        "kind": "explicit",
+        "module": "M1",
+        "prod_digest": "c4059eec3b59f159111bc7ad8eb879aabb1f3bbc27f089419d0bf0d44da86003",
+        "risk_summary": "riesgo acotado",
+        "spec_applicability": {
+          "api_contract": "n/a",
+          "data_model": "applies"
+        },
+        "status": "approved",
+        "test_identities": {
+          "tests/test_m1.py": "b62817470b6d2bad411cf76727c517b68dff0bf1148088ce1a67539c55c1bdd3"
+        },
+        "tier": "tier_2"
+      },
+      "M2": {
+        "added_decisions": [
+          "ADR-011"
+        ],
+        "additive_rationale": null,
+        "adr_refs": [],
+        "approval_evidence": "Sí, adelante con M2",
+        "approved_at": "2026-10-20T11:00:00+00:00",
+        "approved_by": "builder",
+        "approved_dependencies": [],
+        "basis": {
+          "acceptance": "cbe2ff2b330a4890ebdca4b5d02633c4b88b0552233aedafc64238b1bf2d3c57",
+          "active_scope": "3cd21b5e7a07d556b7f11ed8b436808a65336c6f89755122761b92a697475f30",
+          "api_contract": "67326b1224af2437bd1ddf39b459703b62a71ae0b5e25c5bb06ce416883da6cc",
+          "contracts": "f06abf011da20663e6c878ad354d8deba820009e2ad4710ed8beaf55d8fa8ff8",
+          "current_phase": "72e26e73d3942e33a456547a7fd9bf7e45a24edad5175db33bb09b03e141820a",
+          "data_model": "86f4d2696fa21ca1027392a82f81dafdee9ba119c36ac44232019f24b9b2c600",
+          "decisions": "2ee1bcf77318c73ebbac06749d5a6d89b4a805fc992d676a7ba643b67b52feec",
+          "dependencies": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "module_spec": "ac253d770a1e89c96c1736329f598267b58198a891e68859eebc42aeafc12ed5",
+          "phase_plan": "0c4279fbe953119cda50e061e08e12ade488098471322bb40978d45c9f230b8c",
+          "prd": "d8cb68f643bd7b3cf4ac368bae45dd846285f47f16b7db52fc2d96374bbccab7",
+          "tier": "46c34c69a33443df67ed44b34548677bf26308ad1092f7d7f8a5377fdeea3707"
+        },
+        "basis_version": 3,
+        "covers_dependencies": [],
+        "derivation_evidence": "ADR-011 documenta ADR-010",
+        "derived_from": [
+          "_decisions"
+        ],
+        "derived_snapshot_ref": "fe9575b1a514c1616c7f85113862cf5b8ce587f5b5b5a57904c9697a1594abe9",
+        "derived_surfaces": [],
+        "documents_decisions": {
+          "ADR-011": "ADR-010"
+        },
+        "fingerprint": "12bc717b72ceedd858b0fade8c8002dc9eede25bbe5083b4a95eecfed488227b",
+        "foreign_sections": {
+          "acceptance": [
+            "## Módulo 1 — Uno (`M1`)"
+          ],
+          "active_scope": [
+            "## M1"
+          ]
+        },
+        "head_at_approval": null,
+        "identity_kind": "sha256",
+        "kind": "derived_additive",
+        "module": "M2",
+        "non_additive_surfaces": [],
+        "parent_fingerprint": "f15c37d7c6461caa7f9c459d7cdcbdfab8d775df3d312bad211aab35b6aa1a75",
+        "prod_digest": "c4059eec3b59f159111bc7ad8eb879aabb1f3bbc27f089419d0bf0d44da86003",
+        "refreshed_at": "2026-10-20T12:00:00+00:00",
+        "risk_summary": "riesgo bajo",
+        "spec_applicability": {
+          "api_contract": "applies",
+          "data_model": "n/a"
+        },
+        "status": "approved",
+        "test_identities": {
+          "tests/test_m1.py": "b62817470b6d2bad411cf76727c517b68dff0bf1148088ce1a67539c55c1bdd3"
+        },
+        "tier": "tier_1"
+      }
+    },
+    "checkpoints": {},
+    "executions": {},
+    "reviews": {}
+  }
+}

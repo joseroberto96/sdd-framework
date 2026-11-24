@@ -1,0 +1,20 @@
+{
+  "active_module": null,
+  "active_work_tier": null,
+  "current_phase": "phase_01",
+  "current_step": "",
+  "framework_migrations": {},
+  "framework_mode": "template",
+  "generated_at": "2026-10-13T00:01:18.289862+00:00",
+  "last_completed_step": "",
+  "module_counts": {
+    "builder_used": 0,
+    "completed": 0,
+    "pending": 0
+  },
+  "next_action": "no hay siguiente paso registrado; pide el estado en una sesión nueva o usa /reconciliar",
+  "next_module": null,
+  "next_work_tier": null,
+  "open_blockers": [],
+  "project": "[NOMBRE_PROYECTO]"
+}

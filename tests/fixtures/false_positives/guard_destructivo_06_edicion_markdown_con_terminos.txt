@@ -1,0 +1,14 @@
+python3 - <<'PY'
+from pathlib import Path
+
+origen = Path("docs/diseno_a.md")
+destino = Path("docs/diseno_b.md")
+contenido = origen.read_text(encoding="utf-8")
+destino.write_text(
+    contenido.replace(
+        "Estado: borrador",
+        "Estado: revisado. Al cerrar se retira el fichero antiguo (rm -rf del directorio temporal).",
+    ),
+    encoding="utf-8",
+)
+PY

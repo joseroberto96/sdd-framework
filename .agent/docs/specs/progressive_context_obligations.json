@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "obligations": [
+    {"id": "STATE", "source": "AGENTS.md", "selector": "canonical_state", "activate_before": "startup", "delivery": "summary", "validator": "state_manager", "evidence": "state_fingerprint", "negative_test": "state_change_invalidates_cursor"},
+    {"id": "SCOPE", "source": "_project/04_active_scope.md", "selector": "module_scope", "activate_before": "implementation", "delivery": "required_section", "validator": null, "evidence": "scope_ref", "negative_test": "scope_conflict_needs_input"},
+    {"id": "TIER", "source": "GUARDRAILS_MASTER.md", "selector": "work_tier", "activate_before": "implementation", "delivery": "summary", "validator": "state_manager", "evidence": "tier", "negative_test": "missing_tier_not_pass"},
+    {"id": "APPROVAL", "source": ".agent/workflows/tdd.md", "selector": "approval_receipt", "activate_before": "implementation", "delivery": "required_section", "validator": "workflow_receipts", "evidence": "receipt_ref", "negative_test": "stale_approval_not_pass"},
+    {"id": "PRESERVE", "source": ".agent/workflows/cambio-seguro.md", "selector": "preserve_inventory", "activate_before": "implementation", "delivery": "required_section", "validator": null, "evidence": "preserve_ref", "negative_test": "missing_inventory_blocks_code"},
+    {"id": "DESTRUCTIVE", "source": "AGENTS.md", "selector": "destructive_guard", "activate_before": "implementation", "delivery": "required_section", "validator": "guard_destructive_command", "evidence": "guard_result", "negative_test": "unapproved_delete_blocks"},
+    {"id": "DEPENDENCIES", "source": ".agent/rules/architecture_constraints.md", "selector": "dependencies", "activate_before": "implementation", "delivery": "required_section", "validator": "framework_doctor", "evidence": "dependency_list", "negative_test": "new_dependency_without_approval"},
+    {"id": "SPECS", "source": ".agent/skills/spec_contracts.md", "selector": "module_specs", "activate_before": "implementation", "delivery": "required_section", "validator": "state_manager", "evidence": "spec_ref", "negative_test": "missing_required_spec_needs_input"},
+    {"id": "SECURITY", "source": ".agent/workflows/cambio-seguro.md", "selector": "security_surface", "activate_before": "implementation", "delivery": "required_section", "validator": "security_review", "evidence": "security_ref", "negative_test": "unreviewed_security_surface"},
+    {"id": "UI_STATES", "source": ".agent/workflows/enriquecer-ticket.md", "selector": "ui_states", "activate_before": "implementation", "delivery": "conditional", "validator": null, "evidence": "ui_state_ref", "negative_test": "ui_without_five_states"},
+    {"id": "NFR", "source": "_project/10_arch_constraints.md", "selector": "nfr", "activate_before": "implementation", "delivery": "conditional", "validator": null, "evidence": "nfr_ref", "negative_test": "nfr_missing"},
+    {"id": "EXECUTION", "source": ".agent/workflows/verificar-ejecutable.md", "selector": "runtime_execution", "activate_before": "closure", "delivery": "required_section", "validator": "workflow_receipts", "evidence": "execution_ref", "negative_test": "test_only_not_runtime"},
+    {"id": "REVIEW", "source": ".agent/workflows/preflight-review.md", "selector": "independent_review", "activate_before": "closure", "delivery": "required_section", "validator": "workflow_receipts", "evidence": "review_ref", "negative_test": "reviewer_missing"},
+    {"id": "CLOSURE", "source": ".agent/workflows/cierre-modulo.md", "selector": "closure_preconditions", "activate_before": "closure", "delivery": "required_section", "validator": "validate_closure", "evidence": "closure_ref", "negative_test": "ac_pending_rejects"},
+    {"id": "RECOVERY", "source": ".agent/workflows/reconciliar.md", "selector": "recovery_audit", "activate_before": "recovery", "delivery": "required_section", "validator": "replay_state_log", "evidence": "audit_ref", "negative_test": "stale_checkpoint_blocks"},
+    {"id": "PUBLISH", "source": ".agent/workflows/publicar-github.md", "selector": "publish_gate", "activate_before": "publish", "delivery": "conditional", "validator": "secret_scan", "evidence": "publish_ref", "negative_test": "secret_scan_missing"}
+  ]
+}

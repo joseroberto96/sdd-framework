@@ -1,0 +1,60 @@
+# Entorno
+.env
+.env.*
+!.env.example
+
+# Dependencias
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Builds y caches
+dist/
+build/
+.next/
+.nuxt/
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage/
+
+# Logs y temporales
+*.log
+# Evidencia pesada fuera de git; en el documento quedan su ruta y su sha256 (N2)
+backups/
+tmp/
+temp/
+_scratch/
+_scratch/referentes/
+.DS_Store
+
+# Datos locales / privados
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.dump
+*.bak
+secrets/
+private/
+
+# Datos personales / operativos frecuentes en fase 0
+investor-profile.md
+tax-context.md
+portfolio.md
+watchlist.md
+tasks/
+outputs/
+alerts/
+sources/
+
+# Config local de herramientas
+.claude/settings.local.json
+# Configuración Codex del proyecto: solo hooks locales quedan ignorados;
+# config.toml mínimo de state_manager es propagable y puede versionarse.
+.codex/*
+!.codex/config.toml

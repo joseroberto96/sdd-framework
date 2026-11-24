@@ -1,0 +1,11 @@
+python3 - <<'PY'
+import sqlite3
+import tempfile
+from pathlib import Path
+
+with tempfile.TemporaryDirectory() as tmp:
+    con = sqlite3.connect(Path(tmp) / "ejemplo.db")
+    con.execute("PRAGMA journal_mode=WAL")
+    con.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    con.close()
+PY

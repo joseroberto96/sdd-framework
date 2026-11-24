@@ -1,0 +1,7 @@
+python3 - <<'PY'
+from pathlib import Path
+
+nota = Path("/private/tmp/claude-501/-proyecto-ejemplo/00000000-0000-0000-0000-000000000000/scratchpad/nota.txt")
+texto = nota.read_text()
+nota.write_text(texto.replace("PENDIENTE", "Regla: no ejecutar git push --delete ni subir ramas al remoto sin permiso."))
+PY

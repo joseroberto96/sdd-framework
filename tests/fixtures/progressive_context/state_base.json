@@ -1,0 +1,26 @@
+{
+  "project": "ProgressiveContextFixture",
+  "framework_mode": "initialized",
+  "framework_version": "4.35.3",
+  "current_phase": "phase_01",
+  "current_step": "implementation",
+  "last_completed_step": "startup",
+  "stack": {"backend": "Python", "frontend": "none", "database": "none", "auth": "none"},
+  "dependencies": [],
+  "architecture_constraints": [],
+  "contracts": {"public_interfaces": {}},
+  "modules": {"completed": [], "in_progress": ["M1", "M2"], "pending": []},
+  "module_statuses": {"M1": "in_progress", "M2": "in_progress"},
+  "work_tiers": {
+    "M1": {"tier": "tier_1", "rationale": "fixture", "classified_at": "2026-09-09T00:00:00Z", "classified_by": "fixture"},
+    "M2": {"tier": "tier_2", "rationale": "fixture", "classified_at": "2026-09-09T00:00:00Z", "classified_by": "fixture"}
+  },
+  "module_specs": {},
+  "closure_rejections": [],
+  "active_mcps": [],
+  "_refs": {},
+  "session": {"next_action": "Implementar M1", "next_command": "/ciclo"},
+  "_bugs": [],
+  "_clarifications": [],
+  "_decisions": []
+}
